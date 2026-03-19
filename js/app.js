@@ -501,6 +501,63 @@ function _downloadFile(content, filename, mimeType) {
 }
 
 
+// --- Tooltip system (appended to body, always on top) ---
+
+function initTooltips() {
+  const tip = document.createElement("div");
+  tip.className = "app-tooltip";
+  document.body.appendChild(tip);
+
+  let showTimer = null;
+
+  function show(el) {
+    clearTimeout(showTimer);
+    const text = el.getAttribute("data-tooltip");
+    if (!text) return;
+
+    tip.textContent = text;
+    tip.classList.remove("visible");
+
+    showTimer = setTimeout(() => {
+      // Position: prefer below the element, shift horizontally to stay in viewport
+      const rect = el.getBoundingClientRect();
+      const gap = 10;
+
+      tip.style.left = "0px";
+      tip.style.top = "0px";
+      tip.classList.add("visible");
+
+      const tipRect = tip.getBoundingClientRect();
+
+      // Vertical: below if room, else above
+      let top = rect.bottom + gap;
+      if (top + tipRect.height > window.innerHeight) {
+        top = rect.top - tipRect.height - gap;
+      }
+      if (top < 0) top = gap;
+
+      // Horizontal: centered on element, clamped to viewport
+      let left = rect.left + rect.width / 2 - tipRect.width / 2;
+      left = Math.max(gap, Math.min(left, window.innerWidth - tipRect.width - gap));
+
+      tip.style.left = left + "px";
+      tip.style.top = top + "px";
+    }, 1000);
+  }
+
+  function hide() {
+    clearTimeout(showTimer);
+    tip.classList.remove("visible");
+  }
+
+  document.querySelectorAll("[data-tooltip]").forEach(el => {
+    el.addEventListener("mouseenter", () => show(el));
+    el.addEventListener("mouseleave", hide);
+    el.addEventListener("click", hide);
+  });
+}
+
+
 // --- App initialization ---
 
 function initApp() {
@@ -509,6 +566,7 @@ function initApp() {
   initCSVUpload();
   initCurrencyToggle();
   initAdvancedSettings();
+  initTooltips();
 
   // Wire download buttons
   document.getElementById("dl-results-btn").addEventListener("click", downloadResultsCSV);
