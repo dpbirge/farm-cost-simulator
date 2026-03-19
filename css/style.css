@@ -208,15 +208,15 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--primary-light);
+  background: #4b5563;
   color: white;
   font-size: 0.65rem;
   font-weight: 700;
   cursor: pointer;
   border: none;
-  margin-left: 4px;
   vertical-align: middle;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .slider-info-popup {
