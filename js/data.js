@@ -195,6 +195,77 @@ const SAMPLE_PRICE_DATA = [
 ];
 
 
+// --- Weekly date utilities ---
+
+function _toISODate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function _snapToMonday(d) {
+  const day = d.getDay(); // 0=Sun..6=Sat
+  const diff = day === 0 ? -6 : 1 - day; // shift to previous Monday (or same day if Monday)
+  const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+  return monday;
+}
+
+function generateWeeklyDates(startYear, startMonth, endYear, endMonth) {
+  const dates = [];
+  let d = _snapToMonday(new Date(startYear, startMonth - 1, 1));
+  const end = new Date(endYear, endMonth, 0); // last day of endMonth
+  while (d <= end) {
+    dates.push(_toISODate(d));
+    d = new Date(d.getTime() + 7 * MS_PER_DAY);
+  }
+  return dates;
+}
+
+function interpolateMonthlyToWeekly(monthlyPriceData) {
+  if (!monthlyPriceData || monthlyPriceData.length === 0) return [];
+
+  // Build anchor points: price assigned to the 15th of each month
+  const anchors = monthlyPriceData.map(p => ({
+    time: new Date(p.year, p.month - 1, 15).getTime(),
+    price: p.price,
+  }));
+
+  const firstP = monthlyPriceData[0];
+  const lastP = monthlyPriceData[monthlyPriceData.length - 1];
+  const weeklyDates = generateWeeklyDates(firstP.year, firstP.month, lastP.year, lastP.month);
+
+  return weeklyDates.map(dateStr => {
+    const parts = dateStr.split("-");
+    const t = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])).getTime();
+
+    // Find surrounding anchors
+    let price;
+    if (t <= anchors[0].time) {
+      price = anchors[0].price;
+    } else if (t >= anchors[anchors.length - 1].time) {
+      price = anchors[anchors.length - 1].price;
+    } else {
+      let i = 0;
+      while (i < anchors.length - 1 && anchors[i + 1].time < t) i++;
+      const a = anchors[i], b = anchors[i + 1];
+      const frac = (t - a.time) / (b.time - a.time);
+      price = a.price + frac * (b.price - a.price);
+    }
+
+    return { date: dateStr, price };
+  });
+}
+
+function getExactHarvestDate(plantOption, year, kcStages) {
+  const season = plantOption.season;
+  const stages = kcStages ? kcStages[season] : DEFAULT_KC_STAGES[season];
+  const totalDays = _totalKcDays(stages);
+  const plantDate = new Date(year, plantOption.monthIdx, plantOption.dayOfMonth);
+  return new Date(plantDate.getTime() + totalDays * MS_PER_DAY);
+}
+
+
 // --- Helper: determine season type from planting month ---
 
 function _getSeasonType(plantMonth) {

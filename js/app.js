@@ -5,6 +5,7 @@
 
 const APP = {
   priceData: [],
+  weeklyPriceData: [],
   currency: "USD",
   harvests: new Map(),
   timeSeries: [],
@@ -37,6 +38,15 @@ function _readPlantSelections() {
   if (aIdx > 0) keys.push(PLANTING_OPTIONS.autumn[aIdx - 1].key);
   if (sIdx > 0) keys.push(PLANTING_OPTIONS.spring[sIdx - 1].key);
   return keys;
+}
+
+function _readPlantOptions() {
+  const aIdx = parseInt(document.getElementById("autumn-planting-slider").value);
+  const sIdx = parseInt(document.getElementById("spring-planting-slider").value);
+  const opts = [];
+  if (aIdx > 0) opts.push(PLANTING_OPTIONS.autumn[aIdx - 1]);
+  if (sIdx > 0) opts.push(PLANTING_OPTIONS.spring[sIdx - 1]);
+  return opts;
 }
 
 
@@ -112,11 +122,12 @@ function recalculate() {
   const sliderValues = _readSliders();
   const plantKeys = _readPlantSelections();
   const plantMonths = _keysToMonthIndices(plantKeys);
+  const plantOptions = _readPlantOptions();
 
-  // Calculate all harvests
+  // Calculate all harvests (weekly resolution)
   APP.harvests = calcAllHarvests({
-    plantMonths,
-    priceData: APP.priceData,
+    plantOptions,
+    weeklyPriceData: APP.weeklyPriceData,
     sliderValues,
     et0: APP.advancedSettings.et0,
     kcStages: APP.advancedSettings.kcStages,
@@ -124,8 +135,8 @@ function recalculate() {
     agronomic: APP.advancedSettings.agronomic,
   });
 
-  // Backcast theoretical cost/kg for every calendar month
-  const theoreticalMonthlyCosts = calcTheoreticalMonthlyCosts({
+  // Backcast theoretical cost/kg at weekly resolution
+  const theoreticalWeeklyCosts = calcTheoreticalWeeklyCosts({
     sliderValues,
     et0: APP.advancedSettings.et0,
     kcStages: APP.advancedSettings.kcStages,
@@ -133,11 +144,11 @@ function recalculate() {
     agronomic: APP.advancedSettings.agronomic,
   });
 
-  // Build time series
+  // Build time series (weekly)
   APP.timeSeries = buildCostTimeSeries({
-    priceData: APP.priceData,
+    weeklyPriceData: APP.weeklyPriceData,
     harvests: APP.harvests,
-    theoreticalMonthlyCosts,
+    theoreticalWeeklyCosts,
   });
 
   // Update summary
@@ -150,9 +161,10 @@ function recalculate() {
     exchangeRate: _getExchangeRate(),
   });
 
+  const weeklyDates = APP.weeklyPriceData.map(p => p.date);
   renderTimeline({
-    plantMonths,
-    priceData: APP.priceData,
+    plantOptions,
+    weeklyDates,
     kcStages: APP.advancedSettings.kcStages,
   });
 
@@ -313,6 +325,7 @@ function initCSVUpload() {
         return;
       }
       APP.priceData = result.data;
+      APP.weeklyPriceData = interpolateMonthlyToWeekly(APP.priceData);
       recalculate();
     };
     reader.readAsText(file);
@@ -630,8 +643,9 @@ function initApp() {
   document.getElementById("dl-results-btn").addEventListener("click", downloadResultsCSV);
   document.getElementById("dl-settings-btn").addEventListener("click", downloadSettings);
 
-  // Load hardcoded price data and run initial calculation
+  // Load hardcoded price data, interpolate to weekly, and run initial calculation
   APP.priceData = SAMPLE_PRICE_DATA.map(d => ({ ...d }));
+  APP.weeklyPriceData = interpolateMonthlyToWeekly(APP.priceData);
   recalculate();
 }
 

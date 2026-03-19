@@ -9,11 +9,19 @@ const CHART_MARGINS = { l: 65, r: 15 };
 function _buildTicks(dates) {
   const vals = [];
   const text = [];
+  const seen = new Set();
   for (let i = 0; i < dates.length; i++) {
-    const month = parseInt(dates[i].split("-")[1]);
-    if (month % 3 === 1) { // Jan, Apr, Jul, Oct
-      vals.push(dates[i]);
-      text.push(MONTH_NAMES[month - 1]);
+    const parts = dates[i].split("-");
+    const month = parseInt(parts[1]);
+    const day = parseInt(parts[2] || "1");
+    // Show tick at first occurrence of Jan, Apr, Jul, Oct
+    if (month % 3 === 1) {
+      const key = parts[0] + "-" + parts[1];
+      if (!seen.has(key)) {
+        seen.add(key);
+        vals.push(dates[i]);
+        text.push(MONTH_NAMES[month - 1]);
+      }
     }
   }
   return { vals, text };
@@ -24,9 +32,13 @@ function _buildTicks(dates) {
 
 function _buildYearLines(dates, yref) {
   const lines = [];
+  const seen = new Set();
   for (const d of dates) {
-    const [year, month] = d.split("-");
-    if (month === "01") {
+    const parts = d.split("-");
+    const month = parts[1];
+    const year = parts[0];
+    if (month === "01" && !seen.has(year)) {
+      seen.add(year);
       lines.push({
         type: "line",
         xref: "x",
@@ -210,58 +222,65 @@ function renderMainChart({ timeSeries, currencyLabel = "USD", exchangeRate = 1 }
 // --- High-level: Render planting timeline chart ---
 // Separate chart below the main chart with matching x-axis.
 
-function renderTimeline({ plantMonths, priceData, kcStages = null } = {}) {
-  const activePlants = (plantMonths || []).filter(m => m !== null && m !== undefined && m !== "");
+function renderTimeline({ plantOptions, weeklyDates, kcStages = null } = {}) {
+  const activeOpts = (plantOptions || []).filter(o => o);
   const el = document.getElementById("timeline-chart");
   if (!el) return;
 
-  if (!priceData || priceData.length === 0 || activePlants.length === 0) {
+  if (!weeklyDates || weeklyDates.length === 0 || activeOpts.length === 0) {
     Plotly.purge("timeline-chart");
     return;
   }
 
-  const minYear = priceData[0].year;
-  const maxYear = priceData[priceData.length - 1].year;
-  const allDates = priceData.map(p => p.date);
+  const allDates = weeklyDates;
+  const firstDate = new Date(allDates[0]);
+  const lastDate = new Date(allDates[allDates.length - 1]);
+  const minYear = firstDate.getFullYear();
+  const maxYear = lastDate.getFullYear();
   const ticks = _buildTicks(allDates);
-  const barColor = "#3b82f6"; // blue for both seasons
+  const barColor = "#3b82f6";
 
-  // Build y-axis labels — reverse so Autumn is on top
-  const reversed = [...activePlants].reverse();
-  const yLabels = reversed.map(pm => {
-    const plantIdx = parseInt(pm);
-    const season = _getSeasonType(plantIdx);
-    return season.charAt(0).toUpperCase() + season.slice(1);
-  });
+  // Build a lookup for date string -> index for snapping
+  const dateIndex = new Map(allDates.map((d, i) => [d, i]));
+
+  function _findNearestIdx(dateStr) {
+    if (dateIndex.has(dateStr)) return dateIndex.get(dateStr);
+    // Binary search for closest
+    const t = new Date(dateStr).getTime();
+    let best = 0, bestDiff = Infinity;
+    for (let i = 0; i < allDates.length; i++) {
+      const diff = Math.abs(new Date(allDates[i]).getTime() - t);
+      if (diff < bestDiff) { bestDiff = diff; best = i; }
+    }
+    return best;
+  }
+
+  const reversed = [...activeOpts].reverse();
+  const yLabels = reversed.map(o => o.season.charAt(0).toUpperCase() + o.season.slice(1));
 
   const shapes = [];
 
   for (let rowIdx = 0; rowIdx < reversed.length; rowIdx++) {
-    const plantIdx = parseInt(reversed[rowIdx]);
-    const season = _getSeasonType(plantIdx);
-    if (!season) continue;
-
-    const stages = kcStages ? kcStages[season] : DEFAULT_KC_STAGES[season];
+    const opt = reversed[rowIdx];
+    const stages = kcStages ? kcStages[opt.season] : DEFAULT_KC_STAGES[opt.season];
     const totalDays = _totalKcDays(stages);
 
     for (let year = minYear; year <= maxYear; year++) {
-      const startMonth = plantIdx + 1;
-      const startKey = `${year}-${String(startMonth).padStart(2, "0")}`;
-      const endDate = new Date(new Date(year, plantIdx, 1).getTime() + totalDays * MS_PER_DAY);
-      const endYear = endDate.getFullYear();
-      const endMonth = endDate.getMonth() + 1;
-      const endKey = `${endYear}-${String(endMonth).padStart(2, "0")}`;
+      const plantDate = new Date(year, opt.monthIdx, opt.dayOfMonth);
+      const endDate = new Date(plantDate.getTime() + totalDays * MS_PER_DAY);
 
-      const startIdx = allDates.indexOf(startKey);
-      const endIdx = allDates.indexOf(endKey);
-      if (startIdx === -1) continue;
+      const startKey = _toISODate(_snapToMonday(plantDate));
+      const endKey = _toISODate(_snapToMonday(endDate));
+
+      const startIdx = _findNearestIdx(startKey);
+      const endIdx = _findNearestIdx(endKey);
 
       shapes.push({
         type: "rect",
         xref: "x",
         yref: "y",
         x0: startIdx - 0.4,
-        x1: (endIdx !== -1 ? endIdx : allDates.length - 1) + 0.4,
+        x1: endIdx + 0.4,
         y0: rowIdx - 0.225,
         y1: rowIdx + 0.225,
         fillcolor: barColor,

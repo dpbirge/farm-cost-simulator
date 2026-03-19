@@ -246,41 +246,52 @@ function _buildCycleArgs(plantMonthIdx, season, { sliderValues, et0, kcStages, y
 }
 
 
-// --- High-level: Calculate cost for all selected cycles, mapped to harvest months ---
+// --- High-level: Calculate cost for all selected cycles, mapped to weekly harvest dates ---
 
-function calcAllHarvests({ plantMonths, priceData, sliderValues, et0 = DEFAULT_ET0,
+function calcAllHarvests({ plantOptions, weeklyPriceData, sliderValues, et0 = DEFAULT_ET0,
                            kcStages = null, yields = DEFAULT_YIELDS,
                            agronomic = DEFAULT_AGRONOMIC } = {}) {
-  if (!priceData || priceData.length === 0) return new Map();
+  if (!weeklyPriceData || weeklyPriceData.length === 0) return new Map();
 
-  const minYear = priceData[0].year;
-  const maxYear = priceData[priceData.length - 1].year;
-  const priceByDate = new Map(priceData.map(p => [p.date, p.price]));
+  const priceByDate = new Map(weeklyPriceData.map(p => [p.date, p.price]));
+  const allDates = weeklyPriceData.map(p => p.date);
+  const firstDate = new Date(allDates[0]);
+  const lastDate = new Date(allDates[allDates.length - 1]);
+  const minYear = firstDate.getFullYear();
+  const maxYear = lastDate.getFullYear();
   const harvests = new Map();
   const shared = { sliderValues, et0, kcStages, yields, agronomic };
 
-  for (const pm of plantMonths) {
-    if (pm === null || pm === undefined || pm === "") continue;
-    const plantMonthIdx = parseInt(pm);
-    const season = _getSeasonType(plantMonthIdx);
-    if (!season) continue;
-
-    const result = calcCycleCost(_buildCycleArgs(plantMonthIdx, season, shared));
+  for (const opt of plantOptions) {
+    if (!opt) continue;
+    const season = opt.season;
+    const result = calcCycleCost(_buildCycleArgs(opt.monthIdx, season, shared));
 
     for (let year = minYear; year <= maxYear; year++) {
-      const hMonth = result.harvestMonth + 1;
-      const dateKey = `${year}-${String(hMonth).padStart(2, "0")}`;
-      const price = priceByDate.get(dateKey);
-      if (price !== undefined) {
-        harvests.set(dateKey, {
-          ...result,
-          year,
-          marketPrice: price,
-          revenuePerHa: price * result.yieldKgPerHa,
-          profitPerHa: (price - result.costPerKg) * result.yieldKgPerHa,
-          profitPerKg: price - result.costPerKg,
-        });
+      const harvestDate = getExactHarvestDate(opt, year, kcStages);
+      const mondayDate = _snapToMonday(harvestDate);
+      const dateKey = _toISODate(mondayDate);
+
+      // Find nearest weekly date in the price data
+      let price = priceByDate.get(dateKey);
+      if (price === undefined) {
+        // Try +/- 7 days to handle edge alignment
+        for (const offset of [7, -7]) {
+          const nearby = _toISODate(new Date(mondayDate.getTime() + offset * MS_PER_DAY));
+          price = priceByDate.get(nearby);
+          if (price !== undefined) break;
+        }
       }
+      if (price === undefined) continue;
+
+      harvests.set(dateKey, {
+        ...result,
+        year,
+        marketPrice: price,
+        revenuePerHa: price * result.yieldKgPerHa,
+        profitPerHa: (price - result.costPerKg) * result.yieldKgPerHa,
+        profitPerKg: price - result.costPerKg,
+      });
     }
   }
 
@@ -288,82 +299,89 @@ function calcAllHarvests({ plantMonths, priceData, sliderValues, et0 = DEFAULT_E
 }
 
 
-// --- High-level: Backcast theoretical cost/kg for every calendar month ---
+// --- High-level: Backcast theoretical cost/kg at weekly resolution ---
+// Uses a reference year to compute harvest week-of-year for each planting option,
+// then interpolates across 52 weeks.
 
-function calcTheoreticalMonthlyCosts({ sliderValues, et0 = DEFAULT_ET0,
-                                        kcStages = null, yields = DEFAULT_YIELDS,
-                                        agronomic = DEFAULT_AGRONOMIC } = {}) {
-  const costAccum = {};
+function calcTheoreticalWeeklyCosts({ sliderValues, et0 = DEFAULT_ET0,
+                                       kcStages = null, yields = DEFAULT_YIELDS,
+                                       agronomic = DEFAULT_AGRONOMIC } = {}) {
+  const costAccum = {};  // weekOfYear (0-51) -> { sum, count }
   const allOptions = [...PLANTING_OPTIONS.autumn, ...PLANTING_OPTIONS.spring];
   const shared = { sliderValues, et0, kcStages, yields, agronomic };
+  const refYear = 2024;
 
   for (const opt of allOptions) {
     const result = calcCycleCost(_buildCycleArgs(opt.monthIdx, opt.season, shared));
+    const harvestDate = getExactHarvestDate(opt, refYear, kcStages);
+    const jan1 = new Date(refYear, 0, 1);
+    const weekOfYear = Math.floor((harvestDate.getTime() - jan1.getTime()) / (7 * MS_PER_DAY));
+    const w = Math.max(0, Math.min(51, weekOfYear));
 
-    const hMonth = result.harvestMonth;
-    if (hMonth in costAccum) {
-      costAccum[hMonth].sum += result.costPerKg;
-      costAccum[hMonth].count += 1;
+    if (w in costAccum) {
+      costAccum[w].sum += result.costPerKg;
+      costAccum[w].count += 1;
     } else {
-      costAccum[hMonth] = { sum: result.costPerKg, count: 1 };
+      costAccum[w] = { sum: result.costPerKg, count: 1 };
     }
   }
 
   const knownCosts = {};
-  for (const [month, acc] of Object.entries(costAccum)) {
-    knownCosts[month] = acc.sum / acc.count;
+  for (const [w, acc] of Object.entries(costAccum)) {
+    knownCosts[w] = acc.sum / acc.count;
   }
 
-  // Interpolate to fill all 12 months
-  const knownMonths = Object.keys(knownCosts).map(Number).sort((a, b) => a - b);
-  const monthlyCosts = new Map();
+  const knownWeeks = Object.keys(knownCosts).map(Number).sort((a, b) => a - b);
+  const weeklyCosts = new Map();
 
-  if (knownMonths.length === 0) return monthlyCosts;
+  if (knownWeeks.length === 0) return weeklyCosts;
 
-  if (knownMonths.length === 1) {
-    // Single value — flat line
-    const val = knownCosts[knownMonths[0]];
-    for (let m = 0; m < 12; m++) monthlyCosts.set(m, { costPerKg: val });
-    return monthlyCosts;
+  if (knownWeeks.length === 1) {
+    const val = knownCosts[knownWeeks[0]];
+    for (let w = 0; w < 52; w++) weeklyCosts.set(w, { costPerKg: val });
+    return weeklyCosts;
   }
 
-  // Linear interpolation wrapping around the 12-month cycle
-  for (let m = 0; m < 12; m++) {
-    if (m in knownCosts) {
-      monthlyCosts.set(m, { costPerKg: knownCosts[m] });
+  for (let w = 0; w < 52; w++) {
+    if (w in knownCosts) {
+      weeklyCosts.set(w, { costPerKg: knownCosts[w] });
       continue;
     }
 
-    // Find nearest known months before and after (wrapping)
-    let prevMonth = null, nextMonth = null;
-    for (let offset = 1; offset < 12; offset++) {
-      const before = (m - offset + 12) % 12;
-      if (before in knownCosts && prevMonth === null) prevMonth = before;
-      const after = (m + offset) % 12;
-      if (after in knownCosts && nextMonth === null) nextMonth = after;
-      if (prevMonth !== null && nextMonth !== null) break;
+    let prevW = null, nextW = null;
+    for (let offset = 1; offset < 52; offset++) {
+      const before = (w - offset + 52) % 52;
+      if (before in knownCosts && prevW === null) prevW = before;
+      const after = (w + offset) % 52;
+      if (after in knownCosts && nextW === null) nextW = after;
+      if (prevW !== null && nextW !== null) break;
     }
 
-    const distPrev = (m - prevMonth + 12) % 12;
-    const distNext = (nextMonth - m + 12) % 12;
+    const distPrev = (w - prevW + 52) % 52;
+    const distNext = (nextW - w + 52) % 52;
     const totalDist = distPrev + distNext;
     const t = distPrev / totalDist;
-    const interpolated = knownCosts[prevMonth] * (1 - t) + knownCosts[nextMonth] * t;
-    monthlyCosts.set(m, { costPerKg: interpolated });
+    const interpolated = knownCosts[prevW] * (1 - t) + knownCosts[nextW] * t;
+    weeklyCosts.set(w, { costPerKg: interpolated });
   }
 
-  return monthlyCosts;
+  return weeklyCosts;
 }
 
 
 // --- High-level: Build time series for chart overlay ---
-// Includes market price, harvest result cost points, and theoretical backcast cost for every month.
+// Includes market price, harvest result cost points, and theoretical backcast cost for every week.
 
-function buildCostTimeSeries({ priceData, harvests, theoreticalMonthlyCosts = null } = {}) {
-  return priceData.map(p => {
-    const monthIdx = p.month - 1; // price data month is 1-indexed
-    const theoretical = theoreticalMonthlyCosts && theoreticalMonthlyCosts.has(monthIdx)
-      ? theoreticalMonthlyCosts.get(monthIdx).costPerKg
+function buildCostTimeSeries({ weeklyPriceData, harvests, theoreticalWeeklyCosts = null } = {}) {
+  return weeklyPriceData.map(p => {
+    const parts = p.date.split("-");
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    const jan1 = new Date(d.getFullYear(), 0, 1);
+    const weekOfYear = Math.floor((d.getTime() - jan1.getTime()) / (7 * MS_PER_DAY));
+    const w = Math.max(0, Math.min(51, weekOfYear));
+
+    const theoretical = theoreticalWeeklyCosts && theoreticalWeeklyCosts.has(w)
+      ? theoreticalWeeklyCosts.get(w).costPerKg
       : null;
     return {
       date: p.date,
