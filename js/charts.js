@@ -498,9 +498,28 @@ function renderResourceCharts({ cycleResults, currencyLabel = "USD", exchangeRat
   const chartWidth = CHART_WIDTH;
   const subHeight = 260;
 
+  // Combine water across seasons into a single total bar per month
+  const totalWater = sortedMonths.map(m => {
+    let sum = 0;
+    for (const cycle of cycleResults) {
+      for (const mw of cycle.monthlyWater) {
+        if (mw.month === m) sum += mw.water_m3_per_ha;
+      }
+    }
+    return Math.round(sum);
+  });
+
+  const totalWaterTrace = {
+    x: monthLabels,
+    y: totalWater,
+    type: "bar",
+    name: "Water Demand",
+    marker: { color: "#3b82f6" },
+    showlegend: false,
+  };
+
   el.innerHTML = `
     <div id="water-demand-chart"></div>
-    <div id="energy-demand-chart"></div>
     <div id="labor-demand-chart"></div>
   `;
 
@@ -510,19 +529,14 @@ function renderResourceCharts({ cycleResults, currencyLabel = "USD", exchangeRat
     title: { text: title, font: { size: 13 } },
     xaxis: { tickfont: { size: 10 } },
     yaxis: { title: { text: yTitle, font: { size: 11 } }, rangemode: "tozero" },
-    barmode: "group",
     legend: { orientation: "h", y: -0.25, font: { size: 9 } },
     margin: { t: 30, b: 50, l: CHART_MARGINS.l, r: CHART_MARGINS.r },
     plot_bgcolor: "#fafafa",
     paper_bgcolor: "#ffffff",
   });
 
-  Plotly.newPlot("water-demand-chart", waterTraces, barLayout(
+  Plotly.newPlot("water-demand-chart", [totalWaterTrace], barLayout(
     "Monthly Water Demand", "m\u00B3/ha"
-  ), { responsive: false });
-
-  Plotly.newPlot("energy-demand-chart", energyTraces, barLayout(
-    "Monthly Pumping Energy", "kWh/ha"
   ), { responsive: false });
 
   Plotly.newPlot("labor-demand-chart", laborTraces, {
