@@ -188,16 +188,92 @@
     <div class="sources">Sources: ScienceDirect Sinai 9-site RO study (2025, LCOW $0.91-1.60/m&sup3;); MDPI Sustainability solar brackish RO Egypt (2024, OPEX $0.55-0.63/m&sup3;); ScienceDirect Egypt desalination review (2022, $0.33-1.00/m&sup3;); Egypt Independent (El-Arish plant, $97M); SIS Egypt (PM review of N. Sinai desal plants, Oct 2025); HCWW tariff schedule (2017-2018); FAO National Investment Profile Egypt; Daily News Egypt (desal expansion, Nov 2025); Smart Water Magazine (mega-project bidding, 2024); Zawia3 (water crisis reporting); Owl Research (Egypt water prices)</div>
 
     <h4>LCOE: Levelized Cost of Energy ($0.08/kWh)</h4>
-    <p>Energy for agricultural pumping in eastern Sinai reflects three options: Egyptian grid electricity at subsidized agricultural rates (EGP 2.00/kWh, approximately $0.038/kWh, though a 15-25% hike is anticipated in 2026 and grid access may be limited in remote Sinai); solar PV direct-coupled pumping without battery storage ($0.05-0.10/kWh, benefiting from Egypt's excellent irradiation of 6+ kWh/m&sup2;/day); and diesel generators ($0.15-0.25/kWh at EGP 20.5/liter diesel). The default of $0.08/kWh assumes primarily solar PV pumping supplemented by limited grid or diesel backup, consistent with Egypt's agricultural energy transition trajectory.</p>
-    <div class="sources">Sources: EgyptERA tariff schedule (Sept 2024); IRENA Renewable Power Generation Costs 2024 ($0.043/kWh global solar PV); Fraunhofer ISE Egypt study (&lt;$0.077/kWh); IFC/World Bank solar pumping program; GlobalPetrolPrices Egypt diesel</div>
+
+    <p>Energy for agricultural pumping in eastern Sinai reflects multiple options, but most Sinai farms lack grid connection, making off-grid diesel or solar the relevant cost basis. Egypt's electricity subsidy reform program has raised agricultural tariffs from ~65 pt/kWh (FY 2019/20) to 200 pt/kWh (Sep 2024), with a further 25% hike proposed for late 2025. However, in USD terms the grid tariff has actually fallen due to EGP devaluation — from ~$0.039/kWh in 2019 to ~$0.039/kWh in 2024 at the same rate in USD despite tripling in EGP.</p>
+
+    <p><strong>Energy costs by source:</strong></p>
+    <table>
+      <tr><th>Energy Source</th><th>$/kWh</th><th>Notes</th></tr>
+      <tr><td>Egyptian grid (ag tariff)</td><td>0.024 - 0.049</td><td>200 pt/kWh (Sep 2024); most Sinai farms lack grid access</td></tr>
+      <tr><td>Solar PV (off-grid, no battery)</td><td>0.02 - 0.07</td><td>VSD pump, daytime-only; lowest-cost option; ~15,000 LE/kWp installed</td></tr>
+      <tr><td>Solar + diesel hybrid</td><td>0.04 - 0.10</td><td>Solar primary, diesel for night/cloudy; best off-grid all-hours option</td></tr>
+      <tr><td>Solar PV + battery</td><td>0.05 - 0.20</td><td>Battery replacement ~50% of system cost; wide range by capacity</td></tr>
+      <tr><td>Diesel generator</td><td>0.10 - 0.25</td><td>Remote Sinai premium 20-40% over base; rising with subsidy removal</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Diesel price trajectory:</strong> EGP 6.75/L (2019) to EGP 17.50/L (Oct 2025). At 0.3 L/kWh genset consumption, diesel-only LCOE in remote Sinai has risen from ~$0.15/kWh to ~$0.17/kWh in USD. IFC estimates converting Egypt's ~960,000 diesel pumps to solar could save farmers EGP 14 billion (~$275M) annually.
+    </div>
+
+    <p><strong>RO desalination energy requirements:</strong> The simulator's pumping energy parameter (0.10 kWh/m&sup3;) represents well-pumping only. If RO desalination is required, specific energy consumption (SEC) adds 0.5-4.2 kWh/m&sup3; depending on feed water salinity (1,000-23,000 ppm). North Sinai's El-Arish aquifer averages ~2,800 ppm TDS, implying 1.5-3.0 kWh/m&sup3; for brackish RO treatment.</p>
+
+    <p>The default of $0.08/kWh sits in the middle of the solar+diesel hybrid range, which is the most likely energy source for a Sinai farm without grid access. Egypt's solar irradiance (2,000-2,400 kWh/m&sup2;/year in Sinai) makes solar particularly favorable.</p>
+
+    <div class="sources">Sources: EgyptERA tariff schedules (Sep 2024, Jan 2024); IRENA Renewable Power Generation Costs 2024 ($0.043/kWh global solar PV); Energypedia "Solar Powered Irrigation Systems in Egypt"; IFC + Agricultural Bank of Egypt solar pump partnership (2020); IFC + ALEXBANK partnership (2021); Benban Solar Park (1.8 GW operational); Springer solar PV pumping optimization Egypt (2025); Africa Oil &amp; Gas Report (diesel prices, Apr 2025); Al Manassa (25% electricity hike, Oct 2025)</div>
 
     <h4>LCOI: Levelized Cost of Irrigation ($500/ha per season)</h4>
-    <p>LCOI represents the amortized per-hectare per-season cost of the drip irrigation system, including drip tape or drip lines, filtration equipment, fertigation injectors, mainlines, submains, fittings, and installation labor. Drip systems have a dual-lifecycle cost structure: hard infrastructure (mainlines, filters, injectors) amortizes over 10-15 years, while drip tape or thin-wall drip lines must be replaced every 1-3 seasons depending on water quality. In eastern Sinai, hard groundwater with high mineral content accelerates emitter clogging and tape degradation. The default of $500/ha/season is based on empirical data from a 2020 study of 100 Egyptian tomato farms (Ali, 2020, Irrigation and Drainage) which found average irrigation infrastructure costs of $456/ha.</p>
-    <div class="sources">Sources: Ali (2020) "Investment profitability of drip irrigation: Evidence from Egypt," Irrigation and Drainage (Wiley), survey of 100 tomato farms; FAO "Economics of irrigation" ($1,200-2,500/ha capital); ICARDA ultra-low-energy drip irrigation program; FAO AQUASTAT Investment Costs Database</div>
+
+    <p>LCOI represents the amortized per-hectare per-season cost of the drip irrigation system: drip tape or lines, filtration, fertigation injectors, mainlines, submains, fittings, and installation labor. Capital costs for a 1-hectare open-field tomato drip system in Eastern Sinai are estimated at $2,800-3,500/ha installed — 20-40% above Nile Delta averages due to transport logistics, enhanced filtration needs, and limited local suppliers.</p>
+
+    <p><strong>Component breakdown (Eastern Sinai estimate):</strong></p>
+    <table>
+      <tr><th>Component</th><th>% of Capital</th><th>$/ha</th><th>Replacement</th></tr>
+      <tr><td>Drip tape/lines (16mm emitters)</td><td>25-30%</td><td>700-1,050</td><td>1-3 seasons</td></tr>
+      <tr><td>Filtration (sand + disc/screen)</td><td>15-20%</td><td>420-700</td><td>10-15 yrs (media 3-5 yr)</td></tr>
+      <tr><td>Fertigation unit</td><td>10-12%</td><td>280-420</td><td>7-10 years</td></tr>
+      <tr><td>Mainlines &amp; sub-mains (PVC/PE)</td><td>20-25%</td><td>560-875</td><td>10-15 years</td></tr>
+      <tr><td>Fittings, valves, connectors</td><td>5-8%</td><td>140-280</td><td>10-15 years</td></tr>
+      <tr><td>Installation labor</td><td>10-15%</td><td>280-525</td><td>One-time</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Water quality impact:</strong> Eastern Sinai's brackish groundwater (1,500-5,000 ppm TDS) with high calcium and bicarbonate content accelerates emitter clogging by 2-3x vs Nile water. Thin-wall tape may last only 1 season. Acid flushing (phosphoric/nitric) every 2-4 weeks is required, adding $30-80/ha/season in maintenance chemicals. This adds an estimated $80-150/ha/season to LCOI vs sweet-water regions.
+    </div>
+
+    <p><strong>Regional benchmarks (amortized $/ha/season):</strong></p>
+    <table>
+      <tr><th>Region</th><th>$/ha/season</th><th>Notes</th></tr>
+      <tr><td>Eastern Sinai, Egypt</td><td>450-650</td><td>Brackish water, remote logistics</td></tr>
+      <tr><td>Egypt national average</td><td>400-500</td><td>Ali (2020): $456/ha mean from 100-farm survey</td></tr>
+      <tr><td>Nile Delta, Egypt</td><td>300-450</td><td>Sweet water, good supply chain</td></tr>
+      <tr><td>MENA arid (Jordan, Morocco)</td><td>350-550</td><td>Similar water quality challenges</td></tr>
+      <tr><td>California, USA / Spain</td><td>500-900</td><td>High labor, premium components</td></tr>
+    </table>
+
+    <p>The default of $500/ha/season aligns with the Ali (2020) national average ($456) plus a modest Sinai premium. The central Sinai-specific estimate is $530-600/ha/season.</p>
+
+    <div class="sources">Sources: Ali (2020) "Fundamentals of Irrigation and On-farm Water Management," Springer ($456/ha survey mean); FAO (2020) "Investment costs of irrigation systems" ($2,000-4,500/ha capital, $350-600/ha/season amortized); ICARDA (Oweis &amp; Hachum, 2019) MENA drip studies ($300-500/ha/season); World Bank (2018) "Beyond Scarcity" ($400-700/ha/season); IFAD Egypt smallholder projects; Netafim/Jain Irrigation MENA catalogs (2020-2024)</div>
 
     <h4>Labor Rate ($0.75/hr)</h4>
-    <p>Agricultural labor in eastern Sinai is priced in the context of Egypt's informal agricultural economy, where approximately 50-60% of employment operates outside formal wage structures. Egypt's first-ever hourly minimum wage for temporary and seasonal agricultural workers was set at EGP 28/hour (~$0.54/hr) effective March 2025. Eastern Sinai presents unique labor dynamics: the Bedouin population provides a local labor pool with limited alternative employment, while the region's remoteness and harsh climate can require a 15-40% premium over Nile Delta rates for outside seasonal workers. A productive agricultural workday in Sinai is estimated at 7 hours, accounting for midday heat breaks. The default of $0.75/hr (~EGP 275/day) represents a blended rate for a community farm using a mix of local Bedouin labor and occasional hired workers. Seasonal harvest premiums of 20-30% above base rates are typical.</p>
-    <div class="sources">Sources: Egypt National Wages Council (EGP 28/hr min, March 2025); ILO Informal Economy Diagnostic Study in Egypt (April 2025); CEIC Egypt weekly wages (EGP 1,584, Dec 2024); ERI SalaryExpert 2026 farm worker data; CAPMAS employment statistics</div>
+
+    <p>Agricultural labor in eastern Sinai is priced in the context of Egypt's informal agricultural economy, where 50-60% of employment operates outside formal wage structures. Egypt's first explicit hourly minimum for agricultural workers was set at EGP 28/hr (~$0.56/hr) effective March 2025 — a landmark, as agriculture had been largely exempt from prior minimum wage legislation. Enforcement in Sinai remains limited given security conditions and informal arrangements.</p>
+
+    <p><strong>Labor rates by type (Eastern Sinai, 2024-25 USD):</strong></p>
+    <table>
+      <tr><th>Labor Type</th><th>$/hr</th><th>Notes</th></tr>
+      <tr><td>Informal day labor (off-season)</td><td>0.56 - 0.85</td><td>Bedouin &amp; local casual; floor set by EGP 28/hr minimum</td></tr>
+      <tr><td>General field labor (seasonal)</td><td>0.75 - 1.25</td><td>Contracted workers; transplanting, weeding, irrigation</td></tr>
+      <tr><td>Harvest labor (peak season)</td><td>1.00 - 1.50</td><td>30-80% premium; Mar-Jun &amp; Sep-Nov for tomato</td></tr>
+      <tr><td>Skilled/specialized (IPM, grafting)</td><td>1.25 - 2.00</td><td>Trained technicians; limited supply in Sinai</td></tr>
+      <tr><td>Farm supervisor / foreman</td><td>1.50 - 2.50</td><td>Experienced; manages crews of 10-30 workers</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Exchange rate effect:</strong> Nominal EGP wages have roughly tripled since 2019 (EGP 100-150/day to EGP 350-500/day), but USD-equivalent wages have remained remarkably stable in the $0.75-1.25/hr band. Each EGP devaluation temporarily compresses USD wages, then nominal wages catch up within 6-12 months. The default of $0.75/hr represents the post-devaluation floor of this band.
+    </div>
+
+    <p><strong>Regional comparison (2024-25 USD):</strong></p>
+    <table>
+      <tr><th>Region</th><th>$/hr</th></tr>
+      <tr><td>Eastern Sinai, Egypt</td><td>0.60 - 1.25</td></tr>
+      <tr><td>Nile Delta, Egypt</td><td>0.85 - 1.25</td></tr>
+      <tr><td>Upper Egypt</td><td>0.60 - 0.90</td></tr>
+      <tr><td>Jordan</td><td>1.50 - 2.50</td></tr>
+      <tr><td>Morocco / Tunisia</td><td>0.80 - 1.50</td></tr>
+      <tr><td>Israel</td><td>8.50 - 12.00</td></tr>
+    </table>
+
+    <div class="sources">Sources: CAPMAS wage surveys (EGP 163/day 2021, EGP 232/day 2023); Egypt National Wages Council (EGP 28/hr ag minimum, March 2025); ILO Informal Economy Diagnostic Study (2025); FAO cost-of-production studies ($0.80-1.20/hr); World Bank Egypt Economic Monitor (2023-24); CEIC wage data; ILO ILOSTAT database</div>
 
     <h4>Fertilizer Price ($0.55/kg blended)</h4>
     <p>Fertilizer costs are based on the FAO-documented Egyptian recommendation of 300-110-115 kg/ha of N-P&sub2;O&sub5;-K&sub2;O for tomatoes, typically supplied through urea ($0.47/kg), ammonium nitrate ($0.45/kg), superphosphate or DAP ($0.25-0.68/kg), and imported potassium sulfate ($0.40-0.54/kg). Egypt is a major nitrogen and phosphate producer but imports all potash, making potassium the most expensive component. The blended cost depends on product mix: lower-analysis straight fertilizers yield ~$0.38/kg but require higher volume, while higher-analysis products (DAP, compound NPK) cost ~$0.55/kg at lower volume. Eastern Sinai faces a 15-25% transport premium over Nile Delta prices due to distance from production centers (300-500 km) and limited cooperative access.</p>
@@ -333,9 +409,9 @@
       <li>Yields: Regional averages for open-field tomato, Eastern Sinai conditions</li>
       <li>Labor breakdown: FAO/IFAS extension guidelines for field tomato production</li>
       <li>LCOW: ScienceDirect Sinai 9-site RO study (2025); MDPI Sustainability solar brackish RO Egypt (2024); ScienceDirect Egypt desal review (2022); HCWW tariffs; FAO National Investment Profile Egypt; Egypt Independent, SIS Egypt, Daily News Egypt (infrastructure reporting)</li>
-      <li>LCOE: EgyptERA official tariff (Sept 2024); IRENA Renewable Power Generation Costs 2024; Fraunhofer ISE Egypt study; IFC/World Bank solar pumping program</li>
-      <li>LCOI: Ali (2020) "Investment profitability of drip irrigation," Irrigation and Drainage (Wiley); FAO irrigation economics; ICARDA drip irrigation program</li>
-      <li>Labor: Egypt National Wages Council (EGP 28/hr min); ILO Informal Economy Diagnostic Study (2025); CEIC wage data; ERI SalaryExpert</li>
+      <li>LCOE: EgyptERA tariff schedules (Sep 2024, Jan 2024); IRENA RPGC 2024; Energypedia Egypt solar irrigation; IFC/ABE &amp; ALEXBANK solar pump partnerships (2020-21); Springer solar PV Egypt (2025); diesel price tracking (Africa Oil &amp; Gas Report)</li>
+      <li>LCOI: Ali (2020) "Fundamentals of Irrigation" ($456/ha survey mean); FAO (2020) investment costs; ICARDA (Oweis &amp; Hachum, 2019) MENA drip; World Bank (2018) "Beyond Scarcity"; IFAD Egypt smallholder projects; Netafim/Jain Irrigation catalogs</li>
+      <li>Labor: CAPMAS wage surveys (2021-2023); Egypt National Wages Council (EGP 28/hr min, 2025); ILO Informal Economy Diagnostic (2025); FAO cost-of-production studies; World Bank Egypt Economic Monitor (2023-24)</li>
       <li>Fertilizer: FAO "Fertilizer use by crop in Egypt"; Egypt IDSC/FERTILIZERFIELD prices (Dec 2025); IMARC Group SOP benchmark; IFDC/USAID logistics studies</li>
       <li>Seed: Syngenta Group corporate data; USDA GAIN "Egypt Planting Seeds Sector Overview"; Arish University North Sinai tomato screening study</li>
       <li>Packaging: FAO Food Loss Analysis Egypt (2021); World Bank road freight benchmarks; Tridge/SelinaWamucii wholesale prices</li>

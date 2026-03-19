@@ -106,11 +106,47 @@ const LCOW_INFO_HTML = `
 <p style="font-size:0.78rem;color:#64748b;margin:0">Eastern Sinai has no Nile access. Gov. desal is drinking water only, not available for agriculture.</p>
 `;
 
+const LCOE_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Energy Source</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kWh</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Egyptian grid (ag tariff)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.024 \u2013 0.049</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Solar PV (off-grid, no battery)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.02 \u2013 0.07</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Solar + diesel hybrid</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.04 \u2013 0.10</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Solar PV + battery</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.05 \u2013 0.20</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Diesel generator (remote Sinai)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.10 \u2013 0.25</td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">Most Sinai farms lack grid access. Solar+diesel hybrid is the most common off-grid option.</p>
+`;
+
+const LABOR_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Labor Type</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/hr</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Informal day labor (off-season)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.56 \u2013 0.85</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">General field labor (seasonal)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.75 \u2013 1.25</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Harvest labor (peak premium)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">1.00 \u2013 1.50</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Skilled/specialized (IPM, grafting)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">1.25 \u2013 2.00</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Farm supervisor / foreman</td><td style="padding:4px 8px;border:1px solid #e2e8f0">1.50 \u2013 2.50</td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">Eastern Sinai, 2024\u201325 USD. Ag minimum EGP 28/hr (~$0.56) since Mar 2025. Harvest premium 30\u201380% above base.</p>
+`;
+
+const LCOI_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">System / Region</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/ha/season</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Eastern Sinai (brackish water)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">450 \u2013 650</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Egypt national avg (Ali 2020)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">400 \u2013 500</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Nile Delta (sweet water)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">300 \u2013 450</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">MENA arid (Jordan, Morocco)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">350 \u2013 550</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">International high (CA, Spain)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">500 \u2013 900</td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">Amortized drip system cost per season. Sinai premium of 20\u201340% over Nile Delta due to brackish water and remote logistics.</p>
+`;
+
 const SLIDER_DEFS = [
   { id: "lcow",       label: "Levelized Cost of Water",              unit: "$/m\u00B3",     min: 0.19, max: 2.88,    step: 0.01,  default: 0.46, info: LCOW_INFO_HTML },
-  { id: "lcoe",       label: "Levelized Cost of Energy",             unit: "$/kWh",          min: 0.000, max: 0.29,   step: 0.001, default: 0.08 },
-  { id: "lcoi",       label: "Levelized Cost of Irrigation",         unit: "$/ha",           min: 255,  max: 1035,    step: 5,     default: 500  },
-  { id: "labor_rate", label: "Labor Rate",                            unit: "$/hr",           min: 0.47, max: 10.00,   step: 0.01,  default: 0.75 },
+  { id: "lcoe",       label: "Levelized Cost of Energy",             unit: "$/kWh",          min: 0.000, max: 0.29,   step: 0.001, default: 0.08, info: LCOE_INFO_HTML },
+  { id: "lcoi",       label: "Levelized Cost of Irrigation",         unit: "$/ha",           min: 255,  max: 1035,    step: 5,     default: 500, info: LCOI_INFO_HTML },
+  { id: "labor_rate", label: "Labor Rate",                            unit: "$/hr",           min: 0.47, max: 10.00,   step: 0.01,  default: 0.75, info: LABOR_INFO_HTML },
   { id: "fert_price", label: "Fertilizer Price",                      unit: "$/kg",           min: 0.34, max: 0.86,    step: 0.01,  default: 0.55 },
   { id: "seed_price", label: "Seed Price",                            unit: "$/kg seed",      min: 680,  max: 5175,    step: 10,    default: 2000 },
   { id: "pkg_ship",   label: "Packaging & Shipping",                  unit: "$/kg",           min: 0.02, max: 0.12,    step: 0.01,  default: 0.05 },
