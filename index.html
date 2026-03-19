@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomato Farming Simulator</title>
-  <link rel="stylesheet" href="css/style.css?v=15">
+  <link rel="stylesheet" href="css/style.css?v=16">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 </head>
 <body>
@@ -35,14 +35,8 @@
       <div id="sliders-container"></div>
 
       <h3>Planting Schedule</h3>
-      <div class="planting-group">
-        <label for="autumn-select">Autumn Planting</label>
-        <select id="autumn-select"></select>
-      </div>
-      <div class="planting-group">
-        <label for="spring-select">Spring Planting</label>
-        <select id="spring-select"></select>
-      </div>
+      <div class="planting-slider-group" id="autumn-slider-group"></div>
+      <div class="planting-slider-group" id="spring-slider-group"></div>
 
       <!-- Advanced Settings -->
       <div id="advanced-panel" class="collapsed">
@@ -211,10 +205,10 @@
   </div>
 
   <!-- Scripts: data layer first, then model, charts, and finally app controller -->
-  <script src="js/data.js?v=15"></script>
-  <script src="js/cost-model.js?v=15"></script>
-  <script src="js/charts.js?v=15"></script>
-  <script src="js/app.js?v=15"></script>
+  <script src="js/data.js?v=16"></script>
+  <script src="js/cost-model.js?v=16"></script>
+  <script src="js/charts.js?v=16"></script>
+  <script src="js/app.js?v=16"></script>
 
 </body>
 </html>

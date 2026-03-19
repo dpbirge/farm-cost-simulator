@@ -31,9 +31,12 @@ function _readSliders() {
 // --- Low-level: Read planting selections (returns planting option keys) ---
 
 function _readPlantSelections() {
-  const a = document.getElementById("autumn-select").value;
-  const s = document.getElementById("spring-select").value;
-  return [a, s].filter(v => v !== "");
+  const aIdx = parseInt(document.getElementById("autumn-planting-slider").value);
+  const sIdx = parseInt(document.getElementById("spring-planting-slider").value);
+  return [
+    PLANTING_OPTIONS.autumn[aIdx].key,
+    PLANTING_OPTIONS.spring[sIdx].key,
+  ];
 }
 
 
@@ -216,36 +219,48 @@ function initSliders() {
 }
 
 
-// --- High-level: Initialize planting dropdowns ---
+// --- Low-level: Short date label from a planting option ---
+
+function _shortDate(opt) {
+  return MONTH_NAMES[opt.monthIdx] + " " + opt.dayOfMonth;
+}
+
+
+// --- High-level: Build a planting date slider ---
+
+function _buildPlantingSlider(season, containerId, defaultIdx) {
+  const options = PLANTING_OPTIONS[season];
+  const container = document.getElementById(containerId);
+  const maxIdx = options.length - 1;
+
+  const label = season.charAt(0).toUpperCase() + season.slice(1) + " Planting";
+  const currentLabel = _shortDate(options[defaultIdx]);
+
+  container.innerHTML = `
+    <label>${label} <span class="planting-current-label" id="${season}-planting-label">${currentLabel}</span></label>
+    <div class="planting-slider-row">
+      <input type="range" id="${season}-planting-slider" min="0" max="${maxIdx}" step="1" value="${defaultIdx}">
+    </div>
+    <div class="planting-tick-labels">
+      ${options.map(o => `<span>${_shortDate(o)}</span>`).join("")}
+    </div>
+  `;
+
+  const slider = document.getElementById(`${season}-planting-slider`);
+  const display = document.getElementById(`${season}-planting-label`);
+
+  slider.addEventListener("input", () => {
+    display.textContent = _shortDate(options[parseInt(slider.value)]);
+    recalculate();
+  });
+}
+
+
+// --- High-level: Initialize planting sliders ---
 
 function initPlantingDropdowns() {
-  const autumnSelect = document.getElementById("autumn-select");
-  const springSelect = document.getElementById("spring-select");
-
-  // Populate autumn options
-  autumnSelect.innerHTML = '<option value="">-- None --</option>';
-  for (const opt of PLANTING_OPTIONS.autumn) {
-    const el = document.createElement("option");
-    el.value = opt.key;
-    el.textContent = opt.label;
-    autumnSelect.appendChild(el);
-  }
-
-  // Populate spring options
-  springSelect.innerHTML = '<option value="">-- None --</option>';
-  for (const opt of PLANTING_OPTIONS.spring) {
-    const el = document.createElement("option");
-    el.value = opt.key;
-    el.textContent = opt.label;
-    springSelect.appendChild(el);
-  }
-
-  autumnSelect.addEventListener("change", recalculate);
-  springSelect.addEventListener("change", recalculate);
-
-  // Defaults: Early September (autumn), Early February (spring)
-  autumnSelect.value = "sep-early";
-  springSelect.value = "feb-early";
+  _buildPlantingSlider("autumn", "autumn-slider-group", 1);  // default: Sep 1
+  _buildPlantingSlider("spring", "spring-slider-group", 1);  // default: Feb 1
 }
 
 
