@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomato Farming Simulator</title>
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="stylesheet" href="css/style.css?v=14">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 </head>
 <body>
@@ -14,10 +14,10 @@
     <h1>Tomato Farming Simulator</h1>
     <div class="header-controls">
       <div class="csv-upload-group">
-        <label class="header-btn" for="csv-upload">Upload CSV</label>
+        <label class="header-btn" for="csv-upload" data-tooltip="Upload a CSV file with custom tomato price data">Upload CSV</label>
         <input type="file" id="csv-upload" accept=".csv">
       </div>
-      <a href="assumptions.html" class="header-btn" title="View parameter assumptions and methodology">See Assumptions</a>
+      <a href="assumptions.html" class="header-btn" data-tooltip="View parameter assumptions and methodology behind the model">See Assumptions</a>
     </div>
   </header>
 
@@ -30,7 +30,7 @@
 
       <div class="sidebar-heading-row">
         <h3>Cost Inputs</h3>
-        <button id="currency-toggle" class="currency-btn" title="Toggle USD / EGP">USD</button>
+        <button id="currency-toggle" class="currency-btn" data-tooltip="Toggle between US Dollars and Egyptian Pounds">USD</button>
       </div>
       <div id="sliders-container"></div>
 
@@ -148,8 +148,8 @@
       <div class="sidebar-footer">
         <h3>Downloads</h3>
         <div class="sidebar-download-row">
-          <button class="dl-btn dl-btn-sm" id="dl-results-btn">Results CSV</button>
-          <button class="dl-btn dl-btn-sm" id="dl-settings-btn">Settings</button>
+          <button class="dl-btn dl-btn-sm" id="dl-results-btn" data-tooltip="Download the harvest results table as a CSV file">Results CSV</button>
+          <button class="dl-btn dl-btn-sm" id="dl-settings-btn" data-tooltip="Download all current input settings as a JSON file">Settings</button>
         </div>
       </div>
     </aside>
@@ -211,10 +211,10 @@
   </div>
 
   <!-- Scripts: data layer first, then model, charts, and finally app controller -->
-  <script src="js/data.js?v=13"></script>
-  <script src="js/cost-model.js?v=13"></script>
-  <script src="js/charts.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
+  <script src="js/data.js?v=14"></script>
+  <script src="js/cost-model.js?v=14"></script>
+  <script src="js/charts.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
 
 </body>
 </html>
