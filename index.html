@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tomato Farming Simulator</title>
+  <link rel="stylesheet" href="css/style.css?v=13">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <h1>Tomato Farming Simulator</h1>
+    <div class="header-controls">
+      <div class="csv-upload-group">
+        <label class="header-btn" for="csv-upload">Upload CSV</label>
+        <input type="file" id="csv-upload" accept=".csv">
+      </div>
+      <a href="assumptions.html" class="header-btn" title="View parameter assumptions and methodology">See Assumptions</a>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <div class="app-layout" id="main-content">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-content">
+
+      <div class="sidebar-heading-row">
+        <h3>Cost Inputs</h3>
+        <button id="currency-toggle" class="currency-btn" title="Toggle USD / EGP">USD</button>
+      </div>
+      <div id="sliders-container"></div>
+
+      <h3>Planting Schedule</h3>
+      <div class="planting-group">
+        <label for="autumn-select">Autumn Planting</label>
+        <select id="autumn-select"></select>
+      </div>
+      <div class="planting-group">
+        <label for="spring-select">Spring Planting</label>
+        <select id="spring-select"></select>
+      </div>
+
+      <!-- Advanced Settings -->
+      <div id="advanced-panel" class="collapsed">
+        <button id="advanced-toggle">Show Advanced Settings</button>
+
+        <div class="adv-section">
+          <h4>Monthly ET0 (mm/month)</h4>
+          <div class="et0-grid" id="et0-inputs"></div>
+        </div>
+
+        <div class="adv-section">
+          <h4>Kc Stages - Spring</h4>
+          <div class="kc-grid">
+            <label>Initial Kc</label>
+            <input type="number" id="kc-spring-ini-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-spring-ini-days" step="1" min="1" max="90" placeholder="days">
+
+            <label>Dev Kc start</label>
+            <input type="number" id="kc-spring-dev-kc-start" step="0.01" min="0" max="2">
+            <input type="number" id="kc-spring-dev-days" step="1" min="1" max="90" placeholder="days">
+
+            <label>Dev Kc end</label>
+            <input type="number" id="kc-spring-dev-kc-end" step="0.01" min="0" max="2">
+            <span></span>
+
+            <label>Mid Kc</label>
+            <input type="number" id="kc-spring-mid-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-spring-mid-days" step="1" min="1" max="120" placeholder="days">
+
+            <label>Late Kc</label>
+            <input type="number" id="kc-spring-late-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-spring-late-days" step="1" min="1" max="90" placeholder="days">
+          </div>
+        </div>
+
+        <div class="adv-section">
+          <h4>Kc Stages - Autumn</h4>
+          <div class="kc-grid">
+            <label>Initial Kc</label>
+            <input type="number" id="kc-autumn-ini-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-autumn-ini-days" step="1" min="1" max="90" placeholder="days">
+
+            <label>Dev Kc start</label>
+            <input type="number" id="kc-autumn-dev-kc-start" step="0.01" min="0" max="2">
+            <input type="number" id="kc-autumn-dev-days" step="1" min="1" max="90" placeholder="days">
+
+            <label>Dev Kc end</label>
+            <input type="number" id="kc-autumn-dev-kc-end" step="0.01" min="0" max="2">
+            <span></span>
+
+            <label>Mid Kc</label>
+            <input type="number" id="kc-autumn-mid-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-autumn-mid-days" step="1" min="1" max="120" placeholder="days">
+
+            <label>Late Kc</label>
+            <input type="number" id="kc-autumn-late-kc" step="0.01" min="0" max="2">
+            <input type="number" id="kc-autumn-late-days" step="1" min="1" max="90" placeholder="days">
+          </div>
+        </div>
+
+        <div class="adv-section">
+          <h4>Yields (kg/ha)</h4>
+          <div class="agro-grid">
+            <div class="agro-field">
+              <label>Spring</label>
+              <input type="number" id="yield-spring" step="100" min="0">
+            </div>
+            <div class="agro-field">
+              <label>Autumn</label>
+              <input type="number" id="yield-autumn" step="100" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="adv-section">
+          <h4>Agronomic Parameters</h4>
+          <div class="agro-grid">
+            <div class="agro-field">
+              <label>Labor (hrs/ha)</label>
+              <input type="number" id="labor-hours" step="10" min="0">
+            </div>
+            <div class="agro-field">
+              <label>Fertilizer (kg/ha)</label>
+              <input type="number" id="fert-rate" step="10" min="0">
+            </div>
+            <div class="agro-field">
+              <label>Seed (kg/ha)</label>
+              <input type="number" id="seed-rate" step="0.1" min="0">
+            </div>
+            <div class="agro-field">
+              <label>Pumping (kWh/m3)</label>
+              <input type="number" id="kwh-m3" step="0.01" min="0">
+            </div>
+            <div class="agro-field">
+              <label>Irrig. efficiency</label>
+              <input type="number" id="irrig-eff" step="0.01" min="0.1" max="1.0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <div class="sidebar-footer">
+        <h3>Downloads</h3>
+        <div class="sidebar-download-row">
+          <button class="dl-btn dl-btn-sm" id="dl-results-btn">Results CSV</button>
+          <button class="dl-btn dl-btn-sm" id="dl-settings-btn">Settings</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="main-area">
+
+      <div id="error-bar"></div>
+
+      <!-- Summary banner -->
+      <div class="summary-banner">
+        <div class="stat-card">
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-value" id="stat-revenue">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Costs</div>
+          <div class="stat-value" id="stat-costs">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Profit / Loss</div>
+          <div class="stat-value" id="stat-profit">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cycles Profitable</div>
+          <div class="stat-value" id="stat-cycles">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Profit / Cycle</div>
+          <div class="stat-value" id="stat-avg-profit">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Break-Even Price</div>
+          <div class="stat-value" id="stat-breakeven">--</div>
+        </div>
+      </div>
+
+      <!-- Main chart -->
+      <div class="chart-container">
+        <div id="main-chart"></div>
+      </div>
+
+      <!-- Planting timeline -->
+      <div class="chart-container chart-timeline">
+        <div id="timeline-chart"></div>
+      </div>
+
+      <!-- Results table -->
+      <div class="results-section">
+        <h3>Harvest Results</h3>
+        <div class="results-table-wrapper">
+          <div id="results-table-container">
+            <p>Loading data...</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Scripts: data layer first, then model, charts, and finally app controller -->
+  <script src="js/data.js?v=13"></script>
+  <script src="js/cost-model.js?v=13"></script>
+  <script src="js/charts.js?v=13"></script>
+  <script src="js/app.js?v=13"></script>
+
+</body>
+</html>

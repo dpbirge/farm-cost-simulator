@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assumptions - Tomato Farming Simulator</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .page-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .back-link {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover { background: rgba(255,255,255,0.25); }
+
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 24px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h4 {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 12px 0 6px;
+    }
+
+    p {
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+
+    th, td {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+
+    ol, ul {
+      padding-left: 24px;
+      font-size: 0.88rem;
+    }
+
+    li { margin-bottom: 4px; }
+
+    .note {
+      background: #eff6ff;
+      border-left: 3px solid var(--primary-light);
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      margin: 8px 0 14px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .sources {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>Assumptions &amp; Parameters</h1>
+    <a href="index.html" class="back-link">Back to Simulator</a>
+  </header>
+
+  <div class="content">
+
+    <h2>Parameter Reference</h2>
+    <p>All cost parameters are calibrated for open-field tomato production in eastern Sinai, Egypt, based on published research, FAO data, and regional market analysis. Exchange rate: 1 USD = 52.27 EGP (March 2026).</p>
+
+    <!-- ===== COST INPUTS ===== -->
+
+    <h3>Cost Input Parameters</h3>
+    <table>
+      <tr><th>Parameter</th><th>Unit</th><th>Default</th><th>Range</th></tr>
+      <tr><td>Levelized Cost of Water (LCOW)</td><td>$/m&sup3;</td><td>1.15</td><td>0.51 - 2.88</td></tr>
+      <tr><td>Levelized Cost of Energy (LCOE)</td><td>$/kWh</td><td>0.08</td><td>0.03 - 0.29</td></tr>
+      <tr><td>Levelized Cost of Irrigation (LCOI)</td><td>$/ha</td><td>500</td><td>255 - 1,035</td></tr>
+      <tr><td>Labor Rate</td><td>$/hr</td><td>0.75</td><td>0.47 - 1.27</td></tr>
+      <tr><td>Fertilizer Price</td><td>$/kg</td><td>0.55</td><td>0.34 - 0.86</td></tr>
+      <tr><td>Seed Price</td><td>$/kg seed</td><td>2,000</td><td>680 - 5,175</td></tr>
+      <tr><td>Packaging &amp; Shipping</td><td>$/kg</td><td>0.05</td><td>0.02 - 0.12</td></tr>
+      <tr><td>Pest &amp; Disease Control</td><td>$/ha</td><td>350</td><td>128 - 920</td></tr>
+      <tr><td>Additional Costs</td><td>$/ha</td><td>15,000</td><td>10,000 - 20,000</td></tr>
+    </table>
+
+    <h4>LCOW: Levelized Cost of Water ($1.15/m&sup3;)</h4>
+    <p>Water cost is the dominant variable cost for irrigated agriculture in eastern Sinai. Unlike the Nile Valley and Delta, where farmers receive heavily subsidized surface water at near-zero cost, eastern Sinai has no direct access to the Nile system. The Al-Salam Canal serves parts of northern Sinai with mixed Nile/drainage water, but its reach does not extend to eastern Sinai communities near the Gulf of Aqaba. Realistic water sources include: brackish groundwater treated by small-scale reverse osmosis (plant-gate costs of $0.30-0.60/m&sup3;, delivered costs of $0.60-1.20/m&sup3; given groundwater salinity of 2,000-9,000 ppm); seawater desalination from the Red Sea or Gulf of Aqaba ($0.91-1.60/m&sup3; for conventional RO, $0.88-1.50/m&sup3; for solar-powered systems); and trucked water delivery ($2.00-3.00+/m&sup3; in remote areas). The default of $1.15/m&sup3; reflects brackish groundwater RO with solar energy supplementation, including distribution infrastructure costs.</p>
+    <div class="sources">Sources: ScienceDirect (Sinai RO study, LCOW $0.91-1.60/m&sup3;); Egypt desalination review ($0.33-1.00/m&sup3;); NREL solar desalination ($0.88/m&sup3;); FAO National Investment Profile for Egypt; MDPI MENA desalination review (EUR 0.50-2.00/m&sup3;)</div>
+
+    <h4>LCOE: Levelized Cost of Energy ($0.08/kWh)</h4>
+    <p>Energy for agricultural pumping in eastern Sinai reflects three options: Egyptian grid electricity at subsidized agricultural rates (EGP 2.00/kWh, approximately $0.038/kWh, though a 15-25% hike is anticipated in 2026 and grid access may be limited in remote Sinai); solar PV direct-coupled pumping without battery storage ($0.05-0.10/kWh, benefiting from Egypt's excellent irradiation of 6+ kWh/m&sup2;/day); and diesel generators ($0.15-0.25/kWh at EGP 20.5/liter diesel). The default of $0.08/kWh assumes primarily solar PV pumping supplemented by limited grid or diesel backup, consistent with Egypt's agricultural energy transition trajectory.</p>
+    <div class="sources">Sources: EgyptERA tariff schedule (Sept 2024); IRENA Renewable Power Generation Costs 2024 ($0.043/kWh global solar PV); Fraunhofer ISE Egypt study (&lt;$0.077/kWh); IFC/World Bank solar pumping program; GlobalPetrolPrices Egypt diesel</div>
+
+    <h4>LCOI: Levelized Cost of Irrigation ($500/ha per season)</h4>
+    <p>LCOI represents the amortized per-hectare per-season cost of the drip irrigation system, including drip tape or drip lines, filtration equipment, fertigation injectors, mainlines, submains, fittings, and installation labor. Drip systems have a dual-lifecycle cost structure: hard infrastructure (mainlines, filters, injectors) amortizes over 10-15 years, while drip tape or thin-wall drip lines must be replaced every 1-3 seasons depending on water quality. In eastern Sinai, hard groundwater with high mineral content accelerates emitter clogging and tape degradation. The default of $500/ha/season is based on empirical data from a 2020 study of 100 Egyptian tomato farms (Ali, 2020, Irrigation and Drainage) which found average irrigation infrastructure costs of $456/ha.</p>
+    <div class="sources">Sources: Ali (2020) "Investment profitability of drip irrigation: Evidence from Egypt," Irrigation and Drainage (Wiley), survey of 100 tomato farms; FAO "Economics of irrigation" ($1,200-2,500/ha capital); ICARDA ultra-low-energy drip irrigation program; FAO AQUASTAT Investment Costs Database</div>
+
+    <h4>Labor Rate ($0.75/hr)</h4>
+    <p>Agricultural labor in eastern Sinai is priced in the context of Egypt's informal agricultural economy, where approximately 50-60% of employment operates outside formal wage structures. Egypt's first-ever hourly minimum wage for temporary and seasonal agricultural workers was set at EGP 28/hour (~$0.54/hr) effective March 2025. Eastern Sinai presents unique labor dynamics: the Bedouin population provides a local labor pool with limited alternative employment, while the region's remoteness and harsh climate can require a 15-40% premium over Nile Delta rates for outside seasonal workers. A productive agricultural workday in Sinai is estimated at 7 hours, accounting for midday heat breaks. The default of $0.75/hr (~EGP 275/day) represents a blended rate for a community farm using a mix of local Bedouin labor and occasional hired workers. Seasonal harvest premiums of 20-30% above base rates are typical.</p>
+    <div class="sources">Sources: Egypt National Wages Council (EGP 28/hr min, March 2025); ILO Informal Economy Diagnostic Study in Egypt (April 2025); CEIC Egypt weekly wages (EGP 1,584, Dec 2024); ERI SalaryExpert 2026 farm worker data; CAPMAS employment statistics</div>
+
+    <h4>Fertilizer Price ($0.55/kg blended)</h4>
+    <p>Fertilizer costs are based on the FAO-documented Egyptian recommendation of 300-110-115 kg/ha of N-P&sub2;O&sub5;-K&sub2;O for tomatoes, typically supplied through urea ($0.47/kg), ammonium nitrate ($0.45/kg), superphosphate or DAP ($0.25-0.68/kg), and imported potassium sulfate ($0.40-0.54/kg). Egypt is a major nitrogen and phosphate producer but imports all potash, making potassium the most expensive component. The blended cost depends on product mix: lower-analysis straight fertilizers yield ~$0.38/kg but require higher volume, while higher-analysis products (DAP, compound NPK) cost ~$0.55/kg at lower volume. Eastern Sinai faces a 15-25% transport premium over Nile Delta prices due to distance from production centers (300-500 km) and limited cooperative access.</p>
+    <div class="sources">Sources: FAO "Fertilizer use by crop in Egypt" (tomato NPK rates); Egypt IDSC/FERTILIZERFIELD (Dec 2025 domestic prices); IMARC Group (SOP Africa benchmark $540/t); IFDC/USAID fertilizer logistics studies; World Bank fertilizer price tracker</div>
+
+    <h4>Seed Price ($2,000/kg seed)</h4>
+    <p>Tomato seed costs reflect hybrid F1 varieties from international seed companies (Seminis/Bayer, Syngenta, HM Clause) that dominate Egypt's vegetable seed market, which is ~75-80% import-dependent. The default of $2,000/kg (~$6-7 per 1,000 seeds at ~300,000 seeds/kg) represents a standard open-field hybrid with heat tolerance suitable for Sinai's arid climate. At a seeding rate of 0.4 kg/ha for transplant production, seed cost is approximately $800/ha. Varieties recommended for North Sinai by Arish University research include heat-tolerant lines (CLN1621F, Rio Grande) and commercial hybrids. The range ($800-4,500/kg) spans basic hybrids at Syngenta's stated floor of $2/1,000 seeds up to premium varieties with advanced disease resistance packages.</p>
+    <div class="sources">Sources: Syngenta Group ($2/1000 seeds baseline); USDA GAIN Report "Egypt Planting Seeds Sector Overview" (2019); Arish University "Screening of Tomato Genotypes under High Temperature in North Sinai"; IndiaMART wholesale Seminis/Syngenta hybrid pricing; Gaara Seeds (Egypt) variety guide</div>
+
+    <h4>Packaging &amp; Shipping ($0.05/kg)</h4>
+    <p>Packaging and shipping covers farm-gate-to-market costs. Standard domestic packaging in Egypt uses reusable plastic crates (20 kg capacity), with amortized packaging costs of $0.01-0.03/kg. Transport is the dominant component, estimated from World Bank developing-country road freight benchmarks ($0.04-0.13/ton-km) adjusted for Egypt's diesel price of EGP 20.5/liter (March 2026). Eastern Sinai is ~30 km from El-Arish, ~200 km from Ismailia, and ~350 km from Cairo's Obour wholesale market. Tomatoes in Egypt's domestic market are transported without refrigeration (only ~30% cold chain coverage nationally). Total costs range from $0.02/kg for local El-Arish sales to $0.09/kg for Cairo wholesale delivery. The default of $0.05/kg reflects a mix of local and regional market sales.</p>
+    <div class="sources">Sources: FAO Food Loss Analysis: Tomato Value Chains in Egypt (2021, 13.4% post-harvest losses); World Bank road freight benchmarks; GlobalPetrolPrices Egypt diesel; Tridge/SelinaWamucii Egypt wholesale tomato prices; FreshPlaza (45% packaging cost increase, 2024)</div>
+
+    <h4>Pest &amp; Disease Control ($350/ha)</h4>
+    <p>Pest and disease control material costs cover insecticides, fungicides, biological control agents, adjuvants, and pheromone traps -- excluding labor, which is accounted for separately (50 hrs/ha for scouting, spraying, and IPM). The default of $350/ha per season reflects a moderate integrated pest management (IPM) approach suitable for a small community farm in eastern Sinai. Key pests include Tuta absoluta (tomato leaf miner), which increased Mediterranean tomato production costs by over 450 EUR/ha when it first invaded; Bemisia tabaci (whitefly), the primary vector of tomato yellow leaf curl virus (TYLCV); and spider mites, which thrive in Sinai's hot, dry conditions. Sinai's arid climate (&lt;100 mm annual rainfall) significantly reduces fungal disease pressure compared to the Nile Delta, shifting the cost balance toward insecticides (~70%) over fungicides (~20%) and biocontrol/adjuvants (~10%). A typical spray program involves 8-12 insecticide applications and 3-5 fungicide applications per season. Reference costs: Turkish open-field tomato at $141/ha; West African conventional at $285/ha (reduced to $85/ha under IPM); Kenyan smallholder at $300/ha (reduced to $179/ha with biocontrol).</p>
+    <table>
+      <tr><th>Category</th><th>Est. $/ha</th><th>Products</th></tr>
+      <tr><td>Insecticides</td><td>200-250</td><td>Emamectin benzoate, chlorantraniliprole, lambda-cyhalothrin, spinosad</td></tr>
+      <tr><td>Fungicides</td><td>50-70</td><td>Mancozeb, metalaxyl+mancozeb (Ridomil), copper hydroxide</td></tr>
+      <tr><td>Biocontrol agents</td><td>20-30</td><td>Bt (Bacillus thuringiensis), Trichoderma, pheromone traps</td></tr>
+      <tr><td>Adjuvants/surfactants</td><td>10-15</td><td>Spray adjuvants, wetting agents</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>~350</strong></td><td></td></tr>
+    </table>
+    <div class="sources">Sources: CropLife International (Tuta absoluta, 450 EUR/ha cost increase); ScienceDirect Turkey study ($141/ha); CABI/Koppert Kenya biocontrol ($300/ha pre-IPM); Egyptian J. Biological Pest Control (Tuta IPM in Egypt); Mali/Senegal IPM study ($285/ha conventional)</div>
+
+    <h4>Additional Costs ($15,000/ha)</h4>
+    <p>A flat per-cycle catchall for costs not itemized elsewhere in the simulator, such as land rent or lease payments, insurance, equipment depreciation (tractors, sprayers, tools), soil preparation and bed forming, mulch film, crop support structures, management overhead, financing costs, and government fees or permits. The range of $10,000-$20,000/ha reflects the wide variability in these costs depending on land tenure arrangements, equipment ownership vs. rental, and farm scale.</p>
+
+    <!-- ===== AGRONOMIC PARAMETERS ===== -->
+
+    <h3>Agronomic Parameters</h3>
+    <table>
+      <tr><td>Fertilizer application</td><td>450 kg/ha (combined NPK)</td></tr>
+      <tr><td>Seed rate</td><td>0.4 kg/ha (transplanted)</td></tr>
+      <tr><td>Pumping energy</td><td>0.10 kWh/m&sup3;</td></tr>
+      <tr><td>Irrigation efficiency</td><td>0.90 (drip)</td></tr>
+    </table>
+
+    <h3>Labor Breakdown (450 hrs/ha total)</h3>
+    <table>
+      <tr><th>Activity</th><th>Hours/ha</th><th>Description</th></tr>
+      <tr><td>Nursery &amp; Transplanting</td><td>50</td><td>Seedling nursery care and field transplanting</td></tr>
+      <tr><td>Irrigation Management</td><td>60</td><td>Drip system setup, monitoring, and fertigation</td></tr>
+      <tr><td>Weeding &amp; Cultivation</td><td>50</td><td>Manual weeding and soil cultivation</td></tr>
+      <tr><td>Staking &amp; Training</td><td>40</td><td>Plant staking, trellising, and vine training</td></tr>
+      <tr><td>Pest &amp; Disease Control</td><td>50</td><td>Scouting, spraying, and integrated pest management</td></tr>
+      <tr><td>Harvesting</td><td>180</td><td>Manual picking across 4-6 harvest passes</td></tr>
+      <tr><td>Sorting &amp; Packing</td><td>20</td><td>Field sorting and crate packing</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>450</strong></td><td></td></tr>
+    </table>
+
+    <!-- ===== CROP MODEL ===== -->
+
+    <h3>Monthly ET0 (mm/month) - El-Arish Station</h3>
+    <table>
+      <tr><th>Month</th><th>ET0</th></tr>
+      <tr><td>Jan</td><td>91</td></tr>
+      <tr><td>Feb</td><td>98</td></tr>
+      <tr><td>Mar</td><td>140</td></tr>
+      <tr><td>Apr</td><td>173</td></tr>
+      <tr><td>May</td><td>215</td></tr>
+      <tr><td>Jun</td><td>219</td></tr>
+      <tr><td>Jul</td><td>226</td></tr>
+      <tr><td>Aug</td><td>213</td></tr>
+      <tr><td>Sep</td><td>177</td></tr>
+      <tr><td>Oct</td><td>154</td></tr>
+      <tr><td>Nov</td><td>117</td></tr>
+      <tr><td>Dec</td><td>99</td></tr>
+    </table>
+
+    <h3>Kc Growth Stages (FAO-56 Tomato)</h3>
+
+    <h4>Spring</h4>
+    <table>
+      <tr><th>Stage</th><th>Kc</th><th>Days</th></tr>
+      <tr><td>Initial</td><td>0.60</td><td>30</td></tr>
+      <tr><td>Development</td><td>0.60 - 1.15</td><td>40</td></tr>
+      <tr><td>Mid-season</td><td>1.15</td><td>40</td></tr>
+      <tr><td>Late</td><td>0.80</td><td>25</td></tr>
+      <tr><td><strong>Total</strong></td><td>-</td><td><strong>135</strong></td></tr>
+    </table>
+
+    <h4>Autumn</h4>
+    <table>
+      <tr><th>Stage</th><th>Kc</th><th>Days</th></tr>
+      <tr><td>Initial</td><td>0.60</td><td>35</td></tr>
+      <tr><td>Development</td><td>0.60 - 1.15</td><td>45</td></tr>
+      <tr><td>Mid-season</td><td>1.15</td><td>70</td></tr>
+      <tr><td>Late</td><td>0.80</td><td>30</td></tr>
+      <tr><td><strong>Total</strong></td><td>-</td><td><strong>180</strong></td></tr>
+    </table>
+
+    <h3>Yields</h3>
+    <table>
+      <tr><td>Spring</td><td>35,000 kg/ha</td></tr>
+      <tr><td>Autumn</td><td>30,000 kg/ha</td></tr>
+    </table>
+
+    <h3>Planting Windows</h3>
+    <table>
+      <tr><th>Season</th><th>Planting Options</th><th>Duration</th></tr>
+      <tr><td>Spring</td><td>Late Jan, Early Feb, Mid Feb, Early Mar, Mid Mar</td><td>135 days</td></tr>
+      <tr><td>Autumn</td><td>Late Aug, Early Sep, Mid Sep, Early Oct, Mid Oct</td><td>180 days</td></tr>
+    </table>
+
+    <!-- ===== CALCULATION CHAIN ===== -->
+
+    <h3>Calculation Chain</h3>
+    <ol>
+      <li>Daily Kc schedule built from 4 growth stages (initial, development, mid, late)</li>
+      <li>Daily Kc assigned to calendar months starting from planting month</li>
+      <li>Monthly ETc = avg_Kc x daily_ET0 x days_in_month_occupied</li>
+      <li>Monthly water (m&sup3;/ha) = ETc_mm x 10 / irrigation_efficiency</li>
+      <li>Total water = sum of monthly water across growing season</li>
+      <li>Water cost = LCOW x total_water</li>
+      <li>Irrigation cost = LCOI (flat $/ha per cycle)</li>
+      <li>Energy cost = LCOE x kWh/m&sup3; x total_water</li>
+      <li>Labor cost = labor_rate x labor_hours/ha</li>
+      <li>Fertilizer cost = fert_price x fert_kg/ha</li>
+      <li>Seed cost = seed_price x seed_kg/ha</li>
+      <li>Total cost/ha = sum of above</li>
+      <li>Cost/kg (ex. packaging) = total_cost/ha / yield_kg/ha</li>
+      <li>Cost/kg (delivered) = cost/kg + packaging_shipping</li>
+      <li>Profit/ha = (market_price - cost/kg) x yield_kg/ha</li>
+    </ol>
+
+    <!-- ===== DATA SOURCES ===== -->
+
+    <h3>Data Sources</h3>
+    <ul>
+      <li>ET0 values: FAO CLIMWAT database, El-Arish station, Eastern Sinai, Egypt</li>
+      <li>Kc stages: FAO Irrigation &amp; Drainage Paper 56, Table 12 (Tomato)</li>
+      <li>Yields: Regional averages for open-field tomato, Eastern Sinai conditions</li>
+      <li>Labor breakdown: FAO/IFAS extension guidelines for field tomato production</li>
+      <li>LCOW: ScienceDirect Sinai desalination studies; FAO National Investment Profile Egypt; NREL solar desalination review; MDPI MENA desalination for agriculture</li>
+      <li>LCOE: EgyptERA official tariff (Sept 2024); IRENA Renewable Power Generation Costs 2024; Fraunhofer ISE Egypt study; IFC/World Bank solar pumping program</li>
+      <li>LCOI: Ali (2020) "Investment profitability of drip irrigation," Irrigation and Drainage (Wiley); FAO irrigation economics; ICARDA drip irrigation program</li>
+      <li>Labor: Egypt National Wages Council (EGP 28/hr min); ILO Informal Economy Diagnostic Study (2025); CEIC wage data; ERI SalaryExpert</li>
+      <li>Fertilizer: FAO "Fertilizer use by crop in Egypt"; Egypt IDSC/FERTILIZERFIELD prices (Dec 2025); IMARC Group SOP benchmark; IFDC/USAID logistics studies</li>
+      <li>Seed: Syngenta Group corporate data; USDA GAIN "Egypt Planting Seeds Sector Overview"; Arish University North Sinai tomato screening study</li>
+      <li>Packaging: FAO Food Loss Analysis Egypt (2021); World Bank road freight benchmarks; Tridge/SelinaWamucii wholesale prices</li>
+      <li>Exchange rate: 1 USD = 52.27 EGP (March 2026)</li>
+    </ul>
+
+  </div>
+
+</body>
+</html>

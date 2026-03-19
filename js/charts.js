@@ -1,0 +1,413 @@
+// Plotly chart rendering functions
+
+// Fixed chart dimensions for consistent layout
+const CHART_WIDTH = 1050;
+const CHART_MARGINS = { l: 65, r: 15 };
+
+// --- Low-level: Build tick arrays (every 3rd month, month abbreviation) ---
+
+function _buildTicks(dates) {
+  const vals = [];
+  const text = [];
+  for (let i = 0; i < dates.length; i++) {
+    const month = parseInt(dates[i].split("-")[1]);
+    if (month % 3 === 1) { // Jan, Apr, Jul, Oct
+      vals.push(dates[i]);
+      text.push(MONTH_NAMES[month - 1]);
+    }
+  }
+  return { vals, text };
+}
+
+
+// --- Low-level: Build vertical line shapes at January of each year ---
+
+function _buildYearLines(dates, yref) {
+  const lines = [];
+  for (const d of dates) {
+    const [year, month] = d.split("-");
+    if (month === "01") {
+      lines.push({
+        type: "line",
+        xref: "x",
+        yref: yref,
+        x0: d, x1: d,
+        y0: 0, y1: 1,
+        line: { color: "#94a3b8", width: 1.5 },
+        layer: "below",
+      });
+    }
+  }
+  return lines;
+}
+
+
+// --- Low-level: Generate profit/loss shading traces between price and cost ---
+
+function _buildShadingTraces(timeSeries) {
+  const profitX = [], profitUpper = [], profitLower = [];
+  const lossX = [], lossUpper = [], lossLower = [];
+
+  for (const point of timeSeries) {
+    if (point.theoreticalCostPerKg === null) continue;
+    const x = point.date;
+    if (point.marketPrice >= point.theoreticalCostPerKg) {
+      profitX.push(x);
+      profitUpper.push(point.marketPrice);
+      profitLower.push(point.theoreticalCostPerKg);
+    } else {
+      lossX.push(x);
+      lossUpper.push(point.theoreticalCostPerKg);
+      lossLower.push(point.marketPrice);
+    }
+  }
+
+  const traces = [];
+
+  if (profitX.length > 0) {
+    traces.push({
+      x: profitX, y: profitUpper,
+      type: "scatter", mode: "none",
+      showlegend: false,
+    });
+    traces.push({
+      x: profitX, y: profitLower,
+      type: "scatter", mode: "none",
+      fill: "tonexty",
+      fillcolor: "rgba(46,139,87,0.15)",
+      showlegend: false,
+    });
+  }
+
+  if (lossX.length > 0) {
+    traces.push({
+      x: lossX, y: lossUpper,
+      type: "scatter", mode: "none",
+      showlegend: false,
+    });
+    traces.push({
+      x: lossX, y: lossLower,
+      type: "scatter", mode: "none",
+      fill: "tonexty",
+      fillcolor: "rgba(220,20,60,0.15)",
+      showlegend: false,
+    });
+  }
+
+  // Dummy traces for clean legend entries
+  traces.push({
+    x: [null], y: [null],
+    type: "scatter", mode: "markers",
+    name: "Profit",
+    marker: { color: "rgba(46,139,87,0.4)", size: 10, symbol: "square" },
+    showlegend: profitX.length > 0,
+  });
+  traces.push({
+    x: [null], y: [null],
+    type: "scatter", mode: "markers",
+    name: "Loss",
+    marker: { color: "rgba(220,20,60,0.4)", size: 10, symbol: "square" },
+    showlegend: lossX.length > 0,
+  });
+
+  return traces;
+}
+
+
+// --- Low-level: Shared x-axis config for both charts ---
+
+function _sharedXaxis(dates, ticks) {
+  return {
+    type: "category",
+    categoryorder: "array",
+    categoryarray: dates,
+    range: [-0.5, dates.length - 0.5],
+    tickangle: 0,
+    tickfont: { size: 9 },
+    tickmode: "array",
+    tickvals: ticks.vals,
+    ticktext: ticks.text,
+    ticklabelstandoff: 10,
+  };
+}
+
+
+// --- High-level: Render main price vs cost chart ---
+
+function renderMainChart({ timeSeries, currencyLabel = "USD", exchangeRate = 1 } = {}) {
+  const dates = timeSeries.map(p => p.date);
+  const ticks = _buildTicks(dates);
+
+  const prices = timeSeries.map(p => p.marketPrice * exchangeRate);
+  const theoreticalCosts = timeSeries.map(p =>
+    p.theoreticalCostPerKg !== null ? p.theoreticalCostPerKg * exchangeRate : null
+  );
+
+  // Harvest result points colored by profit/loss
+  const harvestDates = [];
+  const harvestCosts = [];
+  const harvestColors = [];
+  for (const p of timeSeries) {
+    if (p.costPerKg !== null) {
+      harvestDates.push(p.date);
+      harvestCosts.push(p.costPerKg * exchangeRate);
+      harvestColors.push(p.marketPrice >= p.costPerKg ? "#2e8b57" : "#dc2626");
+    }
+  }
+
+  const scaledSeries = timeSeries.map(p => ({
+    ...p,
+    marketPrice: p.marketPrice * exchangeRate,
+    theoreticalCostPerKg: p.theoreticalCostPerKg !== null ? p.theoreticalCostPerKg * exchangeRate : null,
+  }));
+
+  const traces = [
+    {
+      x: dates, y: prices,
+      type: "scatter", mode: "lines",
+      name: "Market Price/kg",
+      line: { color: "#000000", width: 2 },
+    },
+    {
+      x: dates, y: theoreticalCosts,
+      type: "scatter", mode: "lines",
+      name: "Cost to Deliver/kg",
+      line: { color: "#dc2626", width: 2, dash: "2px,2px" },
+    },
+    {
+      x: harvestDates, y: harvestCosts,
+      type: "scatter", mode: "markers",
+      name: "Harvest Results",
+      marker: { color: harvestColors, size: 10, symbol: "circle" },
+    },
+    ..._buildShadingTraces(scaledSeries),
+  ];
+
+  const symbol = currencyLabel === "EGP" ? "EGP" : "$";
+  const yearLines = _buildYearLines(dates, "paper");
+  const layout = {
+    width: CHART_WIDTH,
+    height: 380,
+    title: { text: `Market Price vs. Cost to Deliver (${symbol}/kg)`, font: { size: 14 } },
+    xaxis: _sharedXaxis(dates, ticks),
+    yaxis: {
+      range: [0, 1.0],
+      dtick: 0.25,
+      automargin: false,
+    },
+    shapes: yearLines,
+    legend: { orientation: "h", y: -0.15, font: { size: 10 } },
+    margin: { t: 35, b: 60, l: CHART_MARGINS.l, r: CHART_MARGINS.r },
+    hovermode: "x unified",
+    plot_bgcolor: "#fafafa",
+    paper_bgcolor: "#ffffff",
+  };
+
+  Plotly.newPlot("main-chart", traces, layout, { responsive: false });
+}
+
+
+// --- High-level: Render planting timeline chart ---
+// Separate chart below the main chart with matching x-axis.
+
+function renderTimeline({ plantMonths, priceData, kcStages = null } = {}) {
+  const activePlants = (plantMonths || []).filter(m => m !== null && m !== undefined && m !== "");
+  const el = document.getElementById("timeline-chart");
+  if (!el) return;
+
+  if (!priceData || priceData.length === 0 || activePlants.length === 0) {
+    Plotly.purge("timeline-chart");
+    return;
+  }
+
+  const minYear = priceData[0].year;
+  const maxYear = priceData[priceData.length - 1].year;
+  const allDates = priceData.map(p => p.date);
+  const ticks = _buildTicks(allDates);
+  const barColor = "#3b82f6"; // blue for both seasons
+
+  // Build y-axis labels — reverse so Autumn is on top
+  const reversed = [...activePlants].reverse();
+  const yLabels = reversed.map(pm => {
+    const plantIdx = parseInt(pm);
+    const season = _getSeasonType(plantIdx);
+    return season.charAt(0).toUpperCase() + season.slice(1);
+  });
+
+  const shapes = [];
+
+  for (let rowIdx = 0; rowIdx < reversed.length; rowIdx++) {
+    const plantIdx = parseInt(reversed[rowIdx]);
+    const season = _getSeasonType(plantIdx);
+    if (!season) continue;
+
+    const stages = kcStages ? kcStages[season] : DEFAULT_KC_STAGES[season];
+    const totalDays = _totalKcDays(stages);
+
+    for (let year = minYear; year <= maxYear; year++) {
+      const startMonth = plantIdx + 1;
+      const startKey = `${year}-${String(startMonth).padStart(2, "0")}`;
+      const endDate = new Date(new Date(year, plantIdx, 1).getTime() + totalDays * MS_PER_DAY);
+      const endYear = endDate.getFullYear();
+      const endMonth = endDate.getMonth() + 1;
+      const endKey = `${endYear}-${String(endMonth).padStart(2, "0")}`;
+
+      const startIdx = allDates.indexOf(startKey);
+      const endIdx = allDates.indexOf(endKey);
+      if (startIdx === -1) continue;
+
+      shapes.push({
+        type: "rect",
+        xref: "x",
+        yref: "y",
+        x0: startIdx - 0.4,
+        x1: (endIdx !== -1 ? endIdx : allDates.length - 1) + 0.4,
+        y0: rowIdx - 0.225,
+        y1: rowIdx + 0.225,
+        fillcolor: barColor,
+        opacity: 0.7,
+        line: { color: barColor, width: 0 },
+      });
+    }
+  }
+
+  // Invisible trace to establish axes
+  const trace = {
+    x: allDates,
+    y: Array(allDates.length).fill(null),
+    type: "scatter", mode: "markers",
+    marker: { size: 0, opacity: 0 },
+    showlegend: false,
+    hoverinfo: "none",
+  };
+
+  const numRows = yLabels.length;
+  const yearLines = _buildYearLines(allDates, "paper");
+  const layout = {
+    width: CHART_WIDTH,
+    height: 80 + numRows * 35,
+    title: { text: "Planting Schedule", font: { size: 14 } },
+    xaxis: { ..._sharedXaxis(allDates, ticks), showline: false, zeroline: false },
+    yaxis: {
+      tickvals: yLabels.map((_, i) => i),
+      ticktext: yLabels,
+      tickfont: { size: 11 },
+      ticklabelstandoff: 12,
+      automargin: false,
+      range: [-0.6, numRows - 0.4],
+      zeroline: false,
+      showline: false,
+    },
+    shapes: [...shapes, ...yearLines],
+    margin: { t: 35, b: 60, l: CHART_MARGINS.l, r: CHART_MARGINS.r },
+    plot_bgcolor: "#fafafa",
+    paper_bgcolor: "#ffffff",
+  };
+
+  Plotly.newPlot("timeline-chart", [trace], layout, { responsive: false });
+}
+
+
+// --- High-level: Build results table HTML ---
+
+function buildResultsTable({ priceData, harvests, currencyLabel = "USD", exchangeRate = 1 } = {}) {
+  if (!priceData || priceData.length === 0) return "<p>No price data loaded.</p>";
+
+  const harvestEntries = Array.from(harvests.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+  if (harvestEntries.length === 0) return "<p>Select planting months to see harvest results.</p>";
+
+  const symbol = currencyLabel === "EGP" ? "EGP " : "$";
+  const fmt = (v) => {
+    const scaled = v * exchangeRate;
+    if (Math.abs(scaled) >= 1000) return symbol + (scaled / 1000).toFixed(1) + "k";
+    return symbol + scaled.toFixed(2);
+  };
+  const fmtKg = (v) => symbol + (v * exchangeRate).toFixed(2);
+
+  const colCount = harvestEntries.length + 2;
+
+  let html = '<table class="results-table"><thead><tr>';
+  html += "<th>Component</th>";
+  for (const [date] of harvestEntries) html += `<th>${date}</th>`;
+  html += "<th>Total</th></tr></thead><tbody>";
+
+  const costRows = [
+    { label: "Season", fn: h => h.season },
+    { label: "Water Cost ($/ha)", fn: h => fmt(h.breakdown.water), totalKey: "water" },
+    { label: "Irrigation Cost ($/ha)", fn: h => fmt(h.breakdown.irrigation), totalKey: "irrigation" },
+    { label: "Energy Cost ($/ha)", fn: h => fmt(h.breakdown.energy), totalKey: "energy" },
+    { label: "Labor Cost ($/ha)", fn: h => fmt(h.breakdown.labor), totalKey: "labor" },
+    { label: "Fertilizer ($/ha)", fn: h => fmt(h.breakdown.fertilizer), totalKey: "fertilizer" },
+    { label: "Seed ($/ha)", fn: h => fmt(h.breakdown.seed), totalKey: "seed" },
+    { label: "Pest & Disease ($/ha)", fn: h => fmt(h.breakdown.pest), totalKey: "pest" },
+    { label: "Additional Costs ($/ha)", fn: h => fmt(h.breakdown.other), totalKey: "other" },
+    { label: "Total Cost ($/ha)", fn: h => fmt(h.totalCostPerHa + h.pkg_ship * h.yieldKgPerHa), totalKey: "totalCost", bold: true },
+  ];
+
+  const perKgRows = [
+    { label: "Yield (kg/ha)", fn: h => h.yieldKgPerHa.toLocaleString() },
+    { label: "Cost/kg (ex. pkg)", fn: h => fmtKg(h.costPerKgExPkg) },
+    { label: "Packaging ($/kg)", fn: h => fmtKg(h.pkg_ship) },
+    { label: "Cost/kg (delivered)", fn: h => fmtKg(h.costPerKg) },
+    { label: "Market Price ($/kg)", fn: h => fmtKg(h.marketPrice) },
+  ];
+
+  const revenueRows = [
+    { label: "Revenue ($/ha)", fn: h => fmt(h.revenuePerHa), totalKey: "revenue" },
+  ];
+
+  const profitRows = [
+    { label: "Profit ($/ha)", fn: h => fmt(h.profitPerHa), totalKey: "profit", highlight: true },
+  ];
+
+  function _totalFor(key) {
+    let sum = 0;
+    for (const [, h] of harvestEntries) {
+      if (h.breakdown[key] !== undefined) sum += h.breakdown[key];
+      else if (key === "totalCost") sum += h.totalCostPerHa + h.pkg_ship * h.yieldKgPerHa;
+      else if (key === "revenue") sum += h.revenuePerHa;
+      else if (key === "profit") sum += h.profitPerHa;
+    }
+    return sum;
+  }
+
+  function _renderRow(row) {
+    const boldOpen = row.bold ? "<strong>" : "";
+    const boldClose = row.bold ? "</strong>" : "";
+    html += "<tr>";
+    html += `<td class="row-label">${boldOpen}${row.label}${boldClose}</td>`;
+
+    for (const [, h] of harvestEntries) {
+      const val = row.fn(h);
+      let cls = "";
+      if (row.highlight) cls = h.profitPerHa >= 0 ? "profit-positive" : "profit-negative";
+      html += `<td class="${cls}">${boldOpen}${val}${boldClose}</td>`;
+    }
+
+    if (row.totalKey) {
+      const total = _totalFor(row.totalKey);
+      let cls = "total-col";
+      if (row.highlight) cls += total >= 0 ? " profit-positive" : " profit-negative";
+      html += `<td class="${cls}">${boldOpen}${fmt(total)}${boldClose}</td>`;
+    } else {
+      html += `<td class="total-col">-</td>`;
+    }
+    html += "</tr>";
+  }
+
+  function _spacerRow() {
+    html += `<tr class="spacer-row"><td colspan="${colCount}">&nbsp;</td></tr>`;
+  }
+
+  for (const row of costRows) _renderRow(row);
+  _spacerRow();
+  for (const row of perKgRows) _renderRow(row);
+  _spacerRow();
+  for (const row of revenueRows) _renderRow(row);
+  _spacerRow();
+  for (const row of profitRows) _renderRow(row);
+
+  html += "</tbody></table>";
+  return html;
+}
