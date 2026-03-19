@@ -167,6 +167,7 @@ body {
 
 .planting-slider-group {
   margin-bottom: 14px;
+  max-width: 80%;
 }
 
 .planting-slider-group label {
