@@ -106,6 +106,18 @@ const LCOW_INFO_HTML = `
 <p style="font-size:0.78rem;color:#64748b;margin:0">Eastern Sinai has no Nile access. Gov. desal is drinking water only, not available for agriculture.</p>
 `;
 
+const PKG_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Component</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kg</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Packaging (domestic crates)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.01 \u2013 0.03</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Transport: El-Arish local (~30 km)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.003 \u2013 0.006</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Transport: Ismailia (~200 km)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.01 \u2013 0.02</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Transport: Cairo Obour (~350 km)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.02 \u2013 0.04</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0"><b>Combined (local\u2192Cairo range)</b></td><td style="padding:4px 8px;border:1px solid #e2e8f0"><b>0.02 \u2013 0.09</b></td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">No refrigeration (30% cold chain coverage). Post-harvest losses add ~$0.02\u20130.04/kg in embedded costs.</p>
+`;
+
 const SEED_INFO_HTML = `
 <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
 <tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Seed Tier</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/1000 seeds</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kg</th></tr>
@@ -173,7 +185,7 @@ const SLIDER_DEFS = [
   { id: "labor_rate", label: "Labor Rate",                            unit: "$/hr",           min: 0.47, max: 10.00,   step: 0.01,  default: 0.75, info: LABOR_INFO_HTML },
   { id: "fert_price", label: "Fertilizer Price",                      unit: "$/kg",           min: 0.34, max: 0.86,    step: 0.01,  default: 0.55, info: FERT_INFO_HTML },
   { id: "seed_price", label: "Seed Price",                            unit: "$/kg seed",      min: 680,  max: 5175,    step: 10,    default: 2000, info: SEED_INFO_HTML },
-  { id: "pkg_ship",   label: "Packaging & Shipping",                  unit: "$/kg",           min: 0.02, max: 0.12,    step: 0.01,  default: 0.05 },
+  { id: "pkg_ship",   label: "Packaging & Shipping",                  unit: "$/kg",           min: 0.02, max: 0.12,    step: 0.01,  default: 0.05, info: PKG_INFO_HTML },
   { id: "pest_cost", label: "Pest & Disease Control",                unit: "$/ha",           min: 128,  max: 920,     step: 5,     default: 350  },
   { id: "other_cost",label: "Additional Costs",                      unit: "$/ha",           min: 0,    max: 20000,   step: 100,   default: 15000},
 ];
