@@ -251,13 +251,12 @@ function initSliders() {
     div.className = "slider-group";
     div.innerHTML = `
       <label for="slider-${def.id}">${def.label}
-        <span class="slider-unit">(${def.unit})</span>
+        <span class="slider-unit">(${def.unit})</span>${infoBtn}
       </label>
       <div class="slider-row">
         <input type="range" id="slider-${def.id}" min="${def.min}" max="${def.max}"
                step="${def.step}" value="${def.default}">
         <span class="slider-value" id="val-${def.id}">${def.default.toFixed ? def.default.toFixed(decimals) : def.default}</span>
-        ${infoBtn}
       </div>
     `;
     container.appendChild(div);
