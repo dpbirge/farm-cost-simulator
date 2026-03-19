@@ -227,7 +227,7 @@ function renderTimeline({ plantOptions, weeklyDates, kcStages = null } = {}) {
   const el = document.getElementById("timeline-chart");
   if (!el) return;
 
-  if (!weeklyDates || weeklyDates.length === 0 || activeOpts.length === 0) {
+  if (!weeklyDates || weeklyDates.length === 0) {
     Plotly.purge("timeline-chart");
     return;
   }
@@ -245,7 +245,6 @@ function renderTimeline({ plantOptions, weeklyDates, kcStages = null } = {}) {
 
   function _findNearestIdx(dateStr) {
     if (dateIndex.has(dateStr)) return dateIndex.get(dateStr);
-    // Binary search for closest
     const t = new Date(dateStr).getTime();
     let best = 0, bestDiff = Infinity;
     for (let i = 0; i < allDates.length; i++) {
@@ -255,13 +254,14 @@ function renderTimeline({ plantOptions, weeklyDates, kcStages = null } = {}) {
     return best;
   }
 
-  const reversed = [...activeOpts].reverse();
-  const yLabels = reversed.map(o => o.season.charAt(0).toUpperCase() + o.season.slice(1));
+  // Always show both rows: Spring (row 0), Autumn (row 1)
+  const yLabels = ["Spring", "Autumn"];
+  const seasonToRow = { spring: 0, autumn: 1 };
 
   const shapes = [];
 
-  for (let rowIdx = 0; rowIdx < reversed.length; rowIdx++) {
-    const opt = reversed[rowIdx];
+  for (const opt of activeOpts) {
+    const rowIdx = seasonToRow[opt.season];
     const stages = kcStages ? kcStages[opt.season] : DEFAULT_KC_STAGES[opt.season];
     const totalDays = _totalKcDays(stages);
 
