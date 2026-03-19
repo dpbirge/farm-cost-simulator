@@ -314,7 +314,9 @@ function calcTheoreticalWeeklyCosts({ sliderValues, et0 = DEFAULT_ET0,
   for (const opt of allOptions) {
     const result = calcCycleCost(_buildCycleArgs(opt.monthIdx, opt.season, shared));
     const harvestDate = getExactHarvestDate(opt, refYear, kcStages);
-    const jan1 = new Date(refYear, 0, 1);
+    // Use harvest date's own year for week-of-year to handle year-boundary crossings
+    const harvestYear = harvestDate.getFullYear();
+    const jan1 = new Date(harvestYear, 0, 1);
     const weekOfYear = Math.floor((harvestDate.getTime() - jan1.getTime()) / (7 * MS_PER_DAY));
     const w = Math.max(0, Math.min(51, weekOfYear));
 
