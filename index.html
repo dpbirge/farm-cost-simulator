@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomato Farming Simulator</title>
-  <link rel="stylesheet" href="css/style.css?v=28">
+  <link rel="stylesheet" href="css/style.css?v=29">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 </head>
 <body>
@@ -203,8 +203,11 @@
       </div>
 
       <!-- Results table -->
-      <div class="results-section">
-        <h3>Harvest Results</h3>
+      <div class="results-section collapsed">
+        <div class="results-section-header">
+          <h3>Harvest Results</h3>
+          <button id="results-toggle" class="resource-toggle-btn">Show</button>
+        </div>
         <div class="results-table-wrapper">
           <div id="results-table-container">
             <p>Loading data...</p>
@@ -216,10 +219,10 @@
   </div>
 
   <!-- Scripts: data layer first, then model, charts, and finally app controller -->
-  <script src="js/data.js?v=28"></script>
-  <script src="js/cost-model.js?v=28"></script>
-  <script src="js/charts.js?v=28"></script>
-  <script src="js/app.js?v=28"></script>
+  <script src="js/data.js?v=29"></script>
+  <script src="js/cost-model.js?v=29"></script>
+  <script src="js/charts.js?v=29"></script>
+  <script src="js/app.js?v=29"></script>
 
 </body>
 </html>

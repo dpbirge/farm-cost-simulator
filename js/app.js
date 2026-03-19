@@ -571,6 +571,18 @@ function initResourceToggle() {
 }
 
 
+// --- Results table toggle ---
+
+function initResultsToggle() {
+  const btn = document.getElementById("results-toggle");
+  const section = document.querySelector(".results-section");
+  btn.addEventListener("click", () => {
+    section.classList.toggle("collapsed");
+    btn.textContent = section.classList.contains("collapsed") ? "Show" : "Hide";
+  });
+}
+
+
 // --- Tooltip system (appended to body, always on top) ---
 
 function initTooltips() {
@@ -638,6 +650,7 @@ function initApp() {
   initAdvancedSettings();
   initTooltips();
   initResourceToggle();
+  initResultsToggle();
 
   // Wire download buttons
   document.getElementById("dl-results-btn").addEventListener("click", downloadResultsCSV);

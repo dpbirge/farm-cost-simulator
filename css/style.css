@@ -359,6 +359,21 @@ body {
   display: none;
 }
 
+.results-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.results-section-header h3 {
+  margin: 0;
+}
+
+.results-section.collapsed .results-table-wrapper {
+  display: none;
+}
+
 /* --- Results table --- */
 
 .results-section {
