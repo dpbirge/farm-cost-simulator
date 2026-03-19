@@ -80,6 +80,80 @@ function _calcMonthlyWater(monthlyKcData, et0, irrigationEfficiency) {
 }
 
 
+// --- Low-level: Map growth stage day ranges to calendar months ---
+// Returns { month: fractionOfDaysInThisMonth } for each stage
+
+function _stageDayRanges(kcStages) {
+  const ini = kcStages.initial.days;
+  const dev = kcStages.development.days;
+  const mid = kcStages.mid.days;
+  const late = kcStages.late.days;
+  return {
+    initial:     { start: 0, end: ini },
+    development: { start: ini, end: ini + dev },
+    mid:         { start: ini + dev, end: ini + dev + mid },
+    late:        { start: ini + dev + mid, end: ini + dev + mid + late },
+  };
+}
+
+
+// --- High-level: Distribute labor hours by activity to calendar months ---
+
+function calcMonthlyLabor({ plantMonth, totalHours, kcStages }) {
+  const ranges = _stageDayRanges(kcStages);
+  const totalDays = ranges.late.end;
+
+  // Map each day to a calendar month
+  const dayToMonth = [];
+  let curMonth = plantMonth;
+  let dayInMonth = 0;
+  let remaining = DAYS_IN_MONTH[curMonth];
+  for (let d = 0; d < totalDays; d++) {
+    dayToMonth.push(curMonth);
+    dayInMonth++;
+    if (dayInMonth >= remaining) {
+      dayInMonth = 0;
+      curMonth = (curMonth + 1) % 12;
+      remaining = DAYS_IN_MONTH[curMonth];
+    }
+  }
+
+  // For each activity, determine which days it spans, then sum by month
+  const monthlyByActivity = {}; // { activityName: { month: hours } }
+  const monthlyTotal = {};      // { month: hours }
+
+  for (const act of LABOR_ACTIVITIES) {
+    const hours = totalHours * act.fraction;
+    let dayStart, dayEnd;
+
+    if (act.stage === "all") {
+      dayStart = 0;
+      dayEnd = totalDays;
+    } else {
+      const r = ranges[act.stage];
+      const span = act.stageSpan || [0, 1];
+      const len = r.end - r.start;
+      dayStart = r.start + Math.round(len * span[0]);
+      dayEnd = r.start + Math.round(len * span[1]);
+    }
+
+    const spanDays = dayEnd - dayStart;
+    if (spanDays <= 0) continue;
+    const hoursPerDay = hours / spanDays;
+
+    if (!monthlyByActivity[act.name]) monthlyByActivity[act.name] = {};
+
+    for (let d = dayStart; d < dayEnd; d++) {
+      const m = dayToMonth[d];
+      monthlyByActivity[act.name][m] = (monthlyByActivity[act.name][m] || 0) + hoursPerDay;
+      monthlyTotal[m] = (monthlyTotal[m] || 0) + hoursPerDay;
+    }
+  }
+
+  return { monthlyByActivity, monthlyTotal };
+}
+
+
 // --- High-level: Calculate total water for one crop cycle ---
 
 function calcTotalWater({ plantMonth, season = null, et0 = DEFAULT_ET0,
@@ -110,6 +184,13 @@ function calcCycleCost({ plantMonth, lcow, lcoe, lcoi, labor_rate, fert_price,
   const yieldKgPerHa = yields[season];
   const harvestMonth = getHarvestMonth(plantMonth, kcStages ? { [season]: seasonKcStages } : null);
 
+  // Monthly labor breakdown
+  const monthlyLabor = calcMonthlyLabor({
+    plantMonth,
+    totalHours: agronomic.labor_hours_per_ha,
+    kcStages: seasonKcStages,
+  });
+
   // Cost components ($/ha)
   // LCOI is now $/ha (flat per cycle), not $/m3
   const waterCost = lcow * totalWater;
@@ -132,6 +213,7 @@ function calcCycleCost({ plantMonth, lcow, lcoe, lcoi, labor_rate, fert_price,
     yieldKgPerHa,
     totalWater,
     monthlyWater,
+    monthlyLabor,
     breakdown: {
       water: waterCost,
       irrigation: irrigationCost,

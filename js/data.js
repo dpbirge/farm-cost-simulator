@@ -69,6 +69,21 @@ const DEFAULT_AGRONOMIC = {
   area_ha: 1.0,
 };
 
+// Monthly labor distribution by activity type (fraction of total hours per growth stage)
+// Source: FAO Crop Calendar / IFAS Extension labor budgets for staked fresh-market tomato
+// Activities are mapped to crop growth stages (Kc stages), then distributed to calendar months.
+// Fractions sum to 1.0 across all activities.
+const LABOR_ACTIVITIES = [
+  { name: "Land Prep & Planting", fraction: 0.14, stage: "initial",     stageSpan: [0.0, 0.5] },
+  { name: "Transplant & Staking", fraction: 0.10, stage: "initial",     stageSpan: [0.5, 1.0] },
+  { name: "Irrigation Mgmt",      fraction: 0.12, stage: "all" },
+  { name: "Fertigation & Spray",  fraction: 0.10, stage: "all" },
+  { name: "Pruning & Training",   fraction: 0.14, stage: "development", stageSpan: [0.0, 1.0] },
+  { name: "Pest Scouting",        fraction: 0.08, stage: "all" },
+  { name: "Harvesting",           fraction: 0.22, stage: "mid",         stageSpan: [0.3, 1.0] },
+  { name: "Post-Harvest & Maint", fraction: 0.10, stage: "late",        stageSpan: [0.0, 1.0] },
+];
+
 // Slider definitions: id, label, unit, min, max, step, default
 // Defaults based on deep research into eastern Sinai / Egypt conditions:
 //   LCOW: $0.60-2.50/m3 — brackish groundwater RO ($0.60-1.20) to seawater RO ($0.91-1.60)

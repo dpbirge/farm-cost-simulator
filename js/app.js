@@ -156,6 +156,30 @@ function recalculate() {
     kcStages: APP.advancedSettings.kcStages,
   });
 
+  // Compute per-cycle resource data for resource demand charts
+  const cycleResults = [];
+  for (const key of plantKeys) {
+    const opt = getPlantingOption(key);
+    if (!opt) continue;
+    const season = opt.season;
+    const shared = {
+      sliderValues,
+      et0: APP.advancedSettings.et0,
+      kcStages: APP.advancedSettings.kcStages,
+      yields: APP.advancedSettings.yields,
+      agronomic: APP.advancedSettings.agronomic,
+    };
+    const result = calcCycleCost(_buildCycleArgs(opt.monthIdx, season, shared));
+    result.kwh_per_m3 = APP.advancedSettings.agronomic.kwh_per_m3;
+    cycleResults.push(result);
+  }
+
+  renderResourceCharts({
+    cycleResults,
+    currencyLabel: APP.currency,
+    exchangeRate: _getExchangeRate(),
+  });
+
   // Update results table
   document.getElementById("results-table-container").innerHTML = buildResultsTable({
     priceData: APP.priceData,
@@ -522,6 +546,18 @@ function _downloadFile(content, filename, mimeType) {
 }
 
 
+// --- Resource demand toggle ---
+
+function initResourceToggle() {
+  const btn = document.getElementById("resource-toggle");
+  const section = document.querySelector(".resource-demand-section");
+  btn.addEventListener("click", () => {
+    section.classList.toggle("collapsed");
+    btn.textContent = section.classList.contains("collapsed") ? "Show" : "Hide";
+  });
+}
+
+
 // --- Tooltip system (appended to body, always on top) ---
 
 function initTooltips() {
@@ -588,6 +624,7 @@ function initApp() {
   initCurrencyToggle();
   initAdvancedSettings();
   initTooltips();
+  initResourceToggle();
 
   // Wire download buttons
   document.getElementById("dl-results-btn").addEventListener("click", downloadResultsCSV);

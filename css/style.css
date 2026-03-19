@@ -332,6 +332,33 @@ body {
   margin-top: -12px;
 }
 
+/* --- Resource demand section --- */
+
+.resource-demand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.resource-demand-header h3 {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.resource-toggle-btn {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.resource-demand-section.collapsed #resource-charts {
+  display: none;
+}
+
 /* --- Results table --- */
 
 .results-section {

@@ -411,3 +411,122 @@ function buildResultsTable({ priceData, harvests, currencyLabel = "USD", exchang
   html += "</tbody></table>";
   return html;
 }
+
+
+// --- High-level: Render resource demand charts ---
+// Shows monthly water (m³/ha), energy (kWh/ha), and labor (hrs/ha) for active crop cycles.
+
+function renderResourceCharts({ cycleResults, currencyLabel = "USD", exchangeRate = 1 } = {}) {
+  const el = document.getElementById("resource-charts");
+  if (!el) return;
+
+  if (!cycleResults || cycleResults.length === 0) {
+    el.innerHTML = "<p>Select planting dates to see resource demand.</p>";
+    return;
+  }
+
+  // Collect all months that have data across cycles
+  const allMonths = new Set();
+  for (const cycle of cycleResults) {
+    for (const mw of cycle.monthlyWater) allMonths.add(mw.month);
+  }
+  const sortedMonths = [...allMonths].sort((a, b) => a - b);
+  const monthLabels = sortedMonths.map(m => MONTH_NAMES[m]);
+
+  const seasonColors = { spring: "#3b82f6", autumn: "#f59e0b" };
+
+  // --- Water demand chart ---
+  const waterTraces = cycleResults.map(cycle => {
+    const waterByMonth = {};
+    for (const mw of cycle.monthlyWater) waterByMonth[mw.month] = mw.water_m3_per_ha;
+    return {
+      x: monthLabels,
+      y: sortedMonths.map(m => waterByMonth[m] || 0),
+      type: "bar",
+      name: `${cycle.season.charAt(0).toUpperCase() + cycle.season.slice(1)}`,
+      marker: { color: seasonColors[cycle.season] },
+    };
+  });
+
+  // --- Energy demand chart (kWh = water_m3 × kwh_per_m3) ---
+  const energyTraces = cycleResults.map(cycle => {
+    const waterByMonth = {};
+    for (const mw of cycle.monthlyWater) waterByMonth[mw.month] = mw.water_m3_per_ha;
+    return {
+      x: monthLabels,
+      y: sortedMonths.map(m => (waterByMonth[m] || 0) * cycle.kwh_per_m3),
+      type: "bar",
+      name: `${cycle.season.charAt(0).toUpperCase() + cycle.season.slice(1)}`,
+      marker: { color: seasonColors[cycle.season] },
+      showlegend: false,
+    };
+  });
+
+  // --- Labor demand chart (stacked by activity) ---
+  const activityColors = [
+    "#1e40af", "#3b82f6", "#06b6d4", "#10b981",
+    "#84cc16", "#eab308", "#f97316", "#ef4444",
+  ];
+
+  const laborTraces = [];
+  const activityNames = LABOR_ACTIVITIES.map(a => a.name);
+
+  for (let ai = 0; ai < activityNames.length; ai++) {
+    const actName = activityNames[ai];
+    const yVals = sortedMonths.map(m => {
+      let total = 0;
+      for (const cycle of cycleResults) {
+        const actData = cycle.monthlyLabor.monthlyByActivity[actName];
+        if (actData && actData[m]) total += actData[m];
+      }
+      return Math.round(total * 10) / 10;
+    });
+
+    // Only add trace if there are nonzero values
+    if (yVals.some(v => v > 0)) {
+      laborTraces.push({
+        x: monthLabels,
+        y: yVals,
+        type: "bar",
+        name: actName,
+        marker: { color: activityColors[ai % activityColors.length] },
+      });
+    }
+  }
+
+  // Render three sub-charts as subplots in a single container
+  const chartWidth = CHART_WIDTH;
+  const subHeight = 260;
+
+  el.innerHTML = `
+    <div id="water-demand-chart"></div>
+    <div id="energy-demand-chart"></div>
+    <div id="labor-demand-chart"></div>
+  `;
+
+  const barLayout = (title, yTitle) => ({
+    width: chartWidth,
+    height: subHeight,
+    title: { text: title, font: { size: 13 } },
+    xaxis: { tickfont: { size: 10 } },
+    yaxis: { title: { text: yTitle, font: { size: 11 } }, rangemode: "tozero" },
+    barmode: "group",
+    legend: { orientation: "h", y: -0.25, font: { size: 9 } },
+    margin: { t: 30, b: 50, l: CHART_MARGINS.l, r: CHART_MARGINS.r },
+    plot_bgcolor: "#fafafa",
+    paper_bgcolor: "#ffffff",
+  });
+
+  Plotly.newPlot("water-demand-chart", waterTraces, barLayout(
+    "Monthly Water Demand", "m\u00B3/ha"
+  ), { responsive: false });
+
+  Plotly.newPlot("energy-demand-chart", energyTraces, barLayout(
+    "Monthly Pumping Energy", "kWh/ha"
+  ), { responsive: false });
+
+  Plotly.newPlot("labor-demand-chart", laborTraces, {
+    ...barLayout("Monthly Labor by Activity", "hrs/ha"),
+    barmode: "stack",
+  }, { responsive: false });
+}
