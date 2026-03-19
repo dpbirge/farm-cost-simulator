@@ -178,7 +178,6 @@ body {
 
 .planting-slider-row {
   position: relative;
-  max-width: 75%;
 }
 
 .planting-slider-row input[type="range"] {
@@ -190,10 +189,8 @@ body {
 
 .planting-tick-labels {
   display: flex;
-  justify-content: space-between;
   margin-top: 2px;
   pointer-events: none;
-  max-width: 75%;
 }
 
 .planting-tick-labels span {
