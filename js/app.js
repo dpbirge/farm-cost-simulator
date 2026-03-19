@@ -33,10 +33,10 @@ function _readSliders() {
 function _readPlantSelections() {
   const aIdx = parseInt(document.getElementById("autumn-planting-slider").value);
   const sIdx = parseInt(document.getElementById("spring-planting-slider").value);
-  return [
-    PLANTING_OPTIONS.autumn[aIdx].key,
-    PLANTING_OPTIONS.spring[sIdx].key,
-  ];
+  const keys = [];
+  if (aIdx > 0) keys.push(PLANTING_OPTIONS.autumn[aIdx - 1].key);
+  if (sIdx > 0) keys.push(PLANTING_OPTIONS.spring[sIdx - 1].key);
+  return keys;
 }
 
 
@@ -231,10 +231,12 @@ function _shortDate(opt) {
 function _buildPlantingSlider(season, containerId, defaultIdx) {
   const options = PLANTING_OPTIONS[season];
   const container = document.getElementById(containerId);
-  const maxIdx = options.length - 1;
+  const maxIdx = options.length; // 0 = None, 1..N = date options
 
   const label = season.charAt(0).toUpperCase() + season.slice(1) + " Planting";
-  const currentLabel = _shortDate(options[defaultIdx]);
+  const currentLabel = defaultIdx === 0 ? "None" : _shortDate(options[defaultIdx - 1]);
+
+  const tickLabels = ["None", ...options.map(o => _shortDate(o))];
 
   container.innerHTML = `
     <label>${label} <span class="planting-current-label" id="${season}-planting-label">${currentLabel}</span></label>
@@ -242,7 +244,7 @@ function _buildPlantingSlider(season, containerId, defaultIdx) {
       <input type="range" id="${season}-planting-slider" min="0" max="${maxIdx}" step="1" value="${defaultIdx}">
     </div>
     <div class="planting-tick-labels">
-      ${options.map(o => `<span>${_shortDate(o)}</span>`).join("")}
+      ${tickLabels.map(t => `<span>${t}</span>`).join("")}
     </div>
   `;
 
@@ -250,7 +252,8 @@ function _buildPlantingSlider(season, containerId, defaultIdx) {
   const display = document.getElementById(`${season}-planting-label`);
 
   slider.addEventListener("input", () => {
-    display.textContent = _shortDate(options[parseInt(slider.value)]);
+    const idx = parseInt(slider.value);
+    display.textContent = idx === 0 ? "None" : _shortDate(options[idx - 1]);
     recalculate();
   });
 }
@@ -259,8 +262,8 @@ function _buildPlantingSlider(season, containerId, defaultIdx) {
 // --- High-level: Initialize planting sliders ---
 
 function initPlantingDropdowns() {
-  _buildPlantingSlider("autumn", "autumn-slider-group", 1);  // default: Sep 1
-  _buildPlantingSlider("spring", "spring-slider-group", 1);  // default: Feb 1
+  _buildPlantingSlider("autumn", "autumn-slider-group", 2);  // default: Sep 1
+  _buildPlantingSlider("spring", "spring-slider-group", 2);  // default: Feb 1
 }
 
 
