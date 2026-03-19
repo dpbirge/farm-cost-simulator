@@ -203,8 +203,8 @@ function renderMainChart({ timeSeries, currencyLabel = "USD", exchangeRate = 1 }
     title: { text: `Market Price vs. Cost to Deliver (${symbol}/kg)`, font: { size: 14 } },
     xaxis: _sharedXaxis(dates, ticks),
     yaxis: {
-      range: [0, 1.0],
-      dtick: 0.25,
+      range: [0, exchangeRate > 1 ? 50 : 1.0],
+      dtick: exchangeRate > 1 ? 10 : 0.25,
       automargin: false,
     },
     shapes: yearLines,
