@@ -244,7 +244,10 @@ function _buildPlantingSlider(season, containerId, defaultIdx) {
       <input type="range" id="${season}-planting-slider" min="0" max="${maxIdx}" step="1" value="${defaultIdx}">
     </div>
     <div class="planting-tick-labels">
-      ${tickLabels.map(t => `<span>${t}</span>`).join("")}
+      ${tickLabels.map((t, i) => {
+        const pct = (i / maxIdx) * 100;
+        return `<span style="left:${pct}%">${t}</span>`;
+      }).join("")}
     </div>
   `;
 
