@@ -250,8 +250,8 @@ function initSliders() {
     const div = document.createElement("div");
     div.className = "slider-group";
     div.innerHTML = `
-      <label for="slider-${def.id}">${def.label}
-        <span class="slider-unit">(${def.unit})</span>${infoBtn}
+      <label for="slider-${def.id}" style="display:flex;align-items:center">${def.label}
+        <span class="slider-unit">(${def.unit})</span><span style="flex:1"></span>${infoBtn}
       </label>
       <div class="slider-row">
         <input type="range" id="slider-${def.id}" min="${def.min}" max="${def.max}"
