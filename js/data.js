@@ -106,6 +106,30 @@ const LCOW_INFO_HTML = `
 <p style="font-size:0.78rem;color:#64748b;margin:0">Eastern Sinai has no Nile access. Gov. desal is drinking water only, not available for agriculture.</p>
 `;
 
+const SEED_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Seed Tier</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/1000 seeds</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kg</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Local OP / public sector</td><td style="padding:4px 8px;border:1px solid #e2e8f0">3 \u2013 8</td><td style="padding:4px 8px;border:1px solid #e2e8f0">900 \u2013 2,800</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Economy F1 hybrid</td><td style="padding:4px 8px;border:1px solid #e2e8f0">15 \u2013 25</td><td style="padding:4px 8px;border:1px solid #e2e8f0">4,500 \u2013 8,750</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Mid-range F1 (heat-tolerant)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">30 \u2013 50</td><td style="padding:4px 8px;border:1px solid #e2e8f0">9,000 \u2013 17,500</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Premium F1 (TYLCV-resistant)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">50 \u2013 80</td><td style="padding:4px 8px;border:1px solid #e2e8f0">15,000 \u2013 28,000</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Elite F1 (full resistance + LSL)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">70 \u2013 120</td><td style="padding:4px 8px;border:1px solid #e2e8f0">21,000 \u2013 42,000</td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">At 0.4 kg/ha seeding rate, $2,000/kg = $800/ha. Most growers buy by 1000-seed packets, not kg. Egypt seed market ~80% import-dependent.</p>
+`;
+
+const FERT_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Fertilizer</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kg</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Urea (46-0-0)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.19 \u2013 0.28</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Ammonium Nitrate (33.5-0-0)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.15 \u2013 0.22</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">DAP (18-46-0)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.35 \u2013 0.51</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">SOP / Potash (0-0-50)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.65 \u2013 0.97</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0"><b>Tomato blend (300-110-115)</b></td><td style="padding:4px 8px;border:1px solid #e2e8f0"><b>0.38 \u2013 0.62</b></td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">E. Sinai 2025 est. incl. 15\u201325% transport premium. SOP (100% imported) is the main cost driver.</p>
+`;
+
 const LCOE_INFO_HTML = `
 <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
 <tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Energy Source</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/kWh</th></tr>
@@ -147,8 +171,8 @@ const SLIDER_DEFS = [
   { id: "lcoe",       label: "Levelized Cost of Energy",             unit: "$/kWh",          min: 0.000, max: 0.29,   step: 0.001, default: 0.08, info: LCOE_INFO_HTML },
   { id: "lcoi",       label: "Levelized Cost of Irrigation",         unit: "$/ha",           min: 255,  max: 1035,    step: 5,     default: 500, info: LCOI_INFO_HTML },
   { id: "labor_rate", label: "Labor Rate",                            unit: "$/hr",           min: 0.47, max: 10.00,   step: 0.01,  default: 0.75, info: LABOR_INFO_HTML },
-  { id: "fert_price", label: "Fertilizer Price",                      unit: "$/kg",           min: 0.34, max: 0.86,    step: 0.01,  default: 0.55 },
-  { id: "seed_price", label: "Seed Price",                            unit: "$/kg seed",      min: 680,  max: 5175,    step: 10,    default: 2000 },
+  { id: "fert_price", label: "Fertilizer Price",                      unit: "$/kg",           min: 0.34, max: 0.86,    step: 0.01,  default: 0.55, info: FERT_INFO_HTML },
+  { id: "seed_price", label: "Seed Price",                            unit: "$/kg seed",      min: 680,  max: 5175,    step: 10,    default: 2000, info: SEED_INFO_HTML },
   { id: "pkg_ship",   label: "Packaging & Shipping",                  unit: "$/kg",           min: 0.02, max: 0.12,    step: 0.01,  default: 0.05 },
   { id: "pest_cost", label: "Pest & Disease Control",                unit: "$/ha",           min: 128,  max: 920,     step: 5,     default: 350  },
   { id: "other_cost",label: "Additional Costs",                      unit: "$/ha",           min: 0,    max: 20000,   step: 100,   default: 15000},

@@ -276,12 +276,49 @@
     <div class="sources">Sources: CAPMAS wage surveys (EGP 163/day 2021, EGP 232/day 2023); Egypt National Wages Council (EGP 28/hr ag minimum, March 2025); ILO Informal Economy Diagnostic Study (2025); FAO cost-of-production studies ($0.80-1.20/hr); World Bank Egypt Economic Monitor (2023-24); CEIC wage data; ILO ILOSTAT database</div>
 
     <h4>Fertilizer Price ($0.55/kg blended)</h4>
-    <p>Fertilizer costs are based on the FAO-documented Egyptian recommendation of 300-110-115 kg/ha of N-P&sub2;O&sub5;-K&sub2;O for tomatoes, typically supplied through urea ($0.47/kg), ammonium nitrate ($0.45/kg), superphosphate or DAP ($0.25-0.68/kg), and imported potassium sulfate ($0.40-0.54/kg). Egypt is a major nitrogen and phosphate producer but imports all potash, making potassium the most expensive component. The blended cost depends on product mix: lower-analysis straight fertilizers yield ~$0.38/kg but require higher volume, while higher-analysis products (DAP, compound NPK) cost ~$0.55/kg at lower volume. Eastern Sinai faces a 15-25% transport premium over Nile Delta prices due to distance from production centers (300-500 km) and limited cooperative access.</p>
-    <div class="sources">Sources: FAO "Fertilizer use by crop in Egypt" (tomato NPK rates); Egypt IDSC/FERTILIZERFIELD (Dec 2025 domestic prices); IMARC Group (SOP Africa benchmark $540/t); IFDC/USAID fertilizer logistics studies; World Bank fertilizer price tracker</div>
+
+    <p>Fertilizer costs are based on the FAO-recommended 300-110-115 kg/ha of N-P&sub2;O&sub5;-K&sub2;O for tomatoes at 450 kg/ha total application. Egypt is a major producer of nitrogen (Abu Qir, MOPCO) and phosphate fertilizers, but imports all potash (SOP/MOP) from Jordan, Belarus/Russia, and Canada. The K&sub2;O component via SOP represents 40-50% of total fertilizer cost despite being only ~25% of nutrient weight.</p>
+
+    <p><strong>Individual fertilizer prices (Eastern Sinai, 2025 est.):</strong></p>
+    <table>
+      <tr><th>Fertilizer</th><th>Grade</th><th>$/kg</th><th>Notes</th></tr>
+      <tr><td>Urea</td><td>46-0-0</td><td>0.19 - 0.28</td><td>Domestic; partial cooperative subsidy possible</td></tr>
+      <tr><td>Ammonium Nitrate</td><td>33.5-0-0</td><td>0.15 - 0.22</td><td>Domestic; may face security restrictions in Sinai</td></tr>
+      <tr><td>DAP</td><td>18-46-0</td><td>0.35 - 0.51</td><td>Domestic + imported; primary P source</td></tr>
+      <tr><td>Single Superphosphate</td><td>0-15-0</td><td>0.08 - 0.13</td><td>Cheapest P source; domestically produced</td></tr>
+      <tr><td>Potassium Sulfate (SOP)</td><td>0-0-50</td><td>0.65 - 0.97</td><td>100% imported; fully exposed to EGP/USD</td></tr>
+      <tr><td><strong>Tomato blend (weighted)</strong></td><td>300-110-115</td><td><strong>0.38 - 0.62</strong></td><td>At 450 kg/ha; incl. Sinai transport premium</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Subsidy access in Sinai:</strong> The Ministry of Agriculture allocates subsidized N fertilizer (30-50% below market) through cooperatives, but new/reclaimed lands in Sinai have limited access. Quota is typically 2-3 bags (50 kg) per feddan per season — a fraction of total N needs. No subsidy on imported potash or SOP. Net effect: 10-20% total cost reduction at best, vs 25-35% for Nile Delta farmers.
+    </div>
+
+    <p>The default of $0.55/kg sits in the middle of the $0.38-0.62 range for a tomato-specific blend delivered to Eastern Sinai. Global fertilizer prices have largely retreated from 2022 peaks, but EGP devaluation (from ~16 to ~50 per USD) means Egyptian farmers pay 2-3x more in local currency.</p>
+
+    <div class="sources">Sources: FAO "Fertilizer use by crop in Egypt" (NPK rates); World Bank Commodity Price Data ("Pink Sheet"); IFDC AfricaFertilizer.org (Egypt retail/wholesale); Abu Qir Fertilizers / MOPCO annual reports; Egypt CAPMAS price indices; USDA GAIN Reports Egypt; IFA regional statistics</div>
 
     <h4>Seed Price ($2,000/kg seed)</h4>
-    <p>Tomato seed costs reflect hybrid F1 varieties from international seed companies (Seminis/Bayer, Syngenta, HM Clause) that dominate Egypt's vegetable seed market, which is ~75-80% import-dependent. The default of $2,000/kg (~$6-7 per 1,000 seeds at ~300,000 seeds/kg) represents a standard open-field hybrid with heat tolerance suitable for Sinai's arid climate. At a seeding rate of 0.4 kg/ha for transplant production, seed cost is approximately $800/ha. Varieties recommended for North Sinai by Arish University research include heat-tolerant lines (CLN1621F, Rio Grande) and commercial hybrids. The range ($800-4,500/kg) spans basic hybrids at Syngenta's stated floor of $2/1,000 seeds up to premium varieties with advanced disease resistance packages.</p>
-    <div class="sources">Sources: Syngenta Group ($2/1000 seeds baseline); USDA GAIN Report "Egypt Planting Seeds Sector Overview" (2019); Arish University "Screening of Tomato Genotypes under High Temperature in North Sinai"; IndiaMART wholesale Seminis/Syngenta hybrid pricing; Gaara Seeds (Egypt) variety guide</div>
+
+    <p>Egypt's vegetable seed market is ~75-80% import-dependent, dominated by Seminis/Bayer, Syngenta, and HM Clause. Most Egyptian farmers buy seed in packets of 1,000 or 5,000 seeds rather than by the kilogram. At ~300,000-350,000 seeds/kg for tomato, a typical planting density of 22,000-28,000 seeds/ha (accounting for nursery losses) means 0.07-0.08 kg of raw seed per hectare. The simulator uses a 0.4 kg/ha seeding rate which is higher, accounting for nursery and field losses.</p>
+
+    <p><strong>Seed prices by tier:</strong></p>
+    <table>
+      <tr><th>Tier</th><th>Examples</th><th>$/1000 seeds</th><th>$/kg seed</th></tr>
+      <tr><td>Local OP / public sector</td><td>Castel Rock, Edkawy improved</td><td>3 - 8</td><td>900 - 2,800</td></tr>
+      <tr><td>Economy F1</td><td>Older Seminis, Egyptian private cos.</td><td>15 - 25</td><td>4,500 - 8,750</td></tr>
+      <tr><td>Mid-range F1</td><td>GS-12 (Syngenta), Seminis 7723</td><td>30 - 50</td><td>9,000 - 17,500</td></tr>
+      <tr><td>Premium F1 (disease-resistant)</td><td>Shanty, Alissa (Syngenta)</td><td>50 - 80</td><td>15,000 - 28,000</td></tr>
+      <tr><td>Elite F1 (full resistance + LSL)</td><td>Kilele, JAG 8810 (HM Clause)</td><td>70 - 120</td><td>21,000 - 42,000</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Sinai variety requirements:</strong> Arish University and Desert Research Center trials indicate F1 hybrids with TYLCV resistance are essential for Sinai (whitefly-transmitted virus is endemic). Heat-set capability (fruit set above 35&deg;C) and salt-tolerant rootstocks (e.g., Maxifort, adding ~$0.15-0.25/seedling) are recommended for brackish groundwater areas.
+    </div>
+
+    <p>The default of $2,000/kg corresponds to open-pollinated or locally-multiplied seed, yielding ~$800/ha at 0.4 kg/ha. For F1 hybrids (which most commercial growers use), $/kg is much higher but the per-hectare cost is similar ($660-1,680/ha) because less seed is needed. EGP devaluation tripled imported seed costs in local currency terms between 2019-2025, but USD prices were relatively stable with 10-20% supply chain friction premiums.</p>
+
+    <div class="sources">Sources: Syngenta Group catalog pricing (GS-12, Shanty, Alissa); Seminis/Bayer (7723, Koltina); HM Clause (JAG 8810, Kilele); USDA GAIN "Egypt Planting Seeds Sector Overview" (2019); Arish University heat tolerance trials; Desert Research Center / ICARDA Sinai salt-tolerance trials; Egyptian private seed cos. (Misr Hytech, Egybloom, AgriStar)</div>
 
     <h4>Packaging &amp; Shipping ($0.05/kg)</h4>
     <p>Packaging and shipping covers farm-gate-to-market costs. Standard domestic packaging in Egypt uses reusable plastic crates (20 kg capacity), with amortized packaging costs of $0.01-0.03/kg. Transport is the dominant component, estimated from World Bank developing-country road freight benchmarks ($0.04-0.13/ton-km) adjusted for Egypt's diesel price of EGP 20.5/liter (March 2026). Eastern Sinai is ~30 km from El-Arish, ~200 km from Ismailia, and ~350 km from Cairo's Obour wholesale market. Tomatoes in Egypt's domestic market are transported without refrigeration (only ~30% cold chain coverage nationally). Total costs range from $0.02/kg for local El-Arish sales to $0.09/kg for Cairo wholesale delivery. The default of $0.05/kg reflects a mix of local and regional market sales.</p>
