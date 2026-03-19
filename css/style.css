@@ -199,6 +199,54 @@ body {
   float: right;
 }
 
+/* --- Slider info popup --- */
+
+.slider-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  margin-left: 4px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.slider-info-popup {
+  position: fixed;
+  z-index: 10000;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  max-width: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  display: none;
+}
+
+.slider-info-popup.visible {
+  display: block;
+}
+
+.slider-info-popup-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
 /* --- Cost sliders --- */
 
 .slider-group {

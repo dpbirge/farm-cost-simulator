@@ -94,8 +94,20 @@ const LABOR_ACTIVITIES = [
 //   Seed: $800-4500/kg — basic hybrid ($2/1000 seeds) to premium ($15/1000 seeds)
 //   Packaging: $0.02-0.10/kg — local El-Arish ($0.02) to Cairo/Obour wholesale ($0.09)
 // Ranges have 15% buffer added on each end, then clamped to avoid negatives.
+const LCOW_INFO_HTML = `
+<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:8px 0">
+<tr style="background:#f1f5f9"><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">Water Source</th><th style="padding:4px 8px;text-align:left;border:1px solid #e2e8f0">$/m\u00B3</th></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Brackish groundwater + own RO</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.60 \u2013 1.20</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Seawater RO (diesel)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.91 \u2013 1.60</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Seawater RO (solar/wind)</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.88 \u2013 1.50</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Gov. municipal desal</td><td style="padding:4px 8px;border:1px solid #e2e8f0">0.01 \u2013 0.06</td></tr>
+<tr><td style="padding:4px 8px;border:1px solid #e2e8f0">Private tanker trucks</td><td style="padding:4px 8px;border:1px solid #e2e8f0">2.00 \u2013 3.00+</td></tr>
+</table>
+<p style="font-size:0.78rem;color:#64748b;margin:0">Eastern Sinai has no Nile access. Gov. desal is drinking water only, not available for agriculture.</p>
+`;
+
 const SLIDER_DEFS = [
-  { id: "lcow",       label: "Levelized Cost of Water",              unit: "$/m\u00B3",     min: 0.19, max: 2.88,    step: 0.01,  default: 0.46 },
+  { id: "lcow",       label: "Levelized Cost of Water",              unit: "$/m\u00B3",     min: 0.19, max: 2.88,    step: 0.01,  default: 0.46, info: LCOW_INFO_HTML },
   { id: "lcoe",       label: "Levelized Cost of Energy",             unit: "$/kWh",          min: 0.000, max: 0.29,   step: 0.001, default: 0.08 },
   { id: "lcoi",       label: "Levelized Cost of Irrigation",         unit: "$/ha",           min: 255,  max: 1035,    step: 5,     default: 500  },
   { id: "labor_rate", label: "Labor Rate",                            unit: "$/hr",           min: 0.47, max: 10.00,   step: 0.01,  default: 0.75 },

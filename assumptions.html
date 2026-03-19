@@ -141,7 +141,7 @@
     <h3>Cost Input Parameters</h3>
     <table>
       <tr><th>Parameter</th><th>Unit</th><th>Default</th><th>Range</th></tr>
-      <tr><td>Levelized Cost of Water (LCOW)</td><td>$/m&sup3;</td><td>1.15</td><td>0.51 - 2.88</td></tr>
+      <tr><td>Levelized Cost of Water (LCOW)</td><td>$/m&sup3;</td><td>0.46</td><td>0.19 - 2.88</td></tr>
       <tr><td>Levelized Cost of Energy (LCOE)</td><td>$/kWh</td><td>0.08</td><td>0.03 - 0.29</td></tr>
       <tr><td>Levelized Cost of Irrigation (LCOI)</td><td>$/ha</td><td>500</td><td>255 - 1,035</td></tr>
       <tr><td>Labor Rate</td><td>$/hr</td><td>0.75</td><td>0.47 - 1.27</td></tr>
@@ -152,9 +152,40 @@
       <tr><td>Additional Costs</td><td>$/ha</td><td>15,000</td><td>10,000 - 20,000</td></tr>
     </table>
 
-    <h4>LCOW: Levelized Cost of Water ($1.15/m&sup3;)</h4>
-    <p>Water cost is the dominant variable cost for irrigated agriculture in eastern Sinai. Unlike the Nile Valley and Delta, where farmers receive heavily subsidized surface water at near-zero cost, eastern Sinai has no direct access to the Nile system. The Al-Salam Canal serves parts of northern Sinai with mixed Nile/drainage water, but its reach does not extend to eastern Sinai communities near the Gulf of Aqaba. Realistic water sources include: brackish groundwater treated by small-scale reverse osmosis (plant-gate costs of $0.30-0.60/m&sup3;, delivered costs of $0.60-1.20/m&sup3; given groundwater salinity of 2,000-9,000 ppm); seawater desalination from the Red Sea or Gulf of Aqaba ($0.91-1.60/m&sup3; for conventional RO, $0.88-1.50/m&sup3; for solar-powered systems); and trucked water delivery ($2.00-3.00+/m&sup3; in remote areas). The default of $1.15/m&sup3; reflects brackish groundwater RO with solar energy supplementation, including distribution infrastructure costs.</p>
-    <div class="sources">Sources: ScienceDirect (Sinai RO study, LCOW $0.91-1.60/m&sup3;); Egypt desalination review ($0.33-1.00/m&sup3;); NREL solar desalination ($0.88/m&sup3;); FAO National Investment Profile for Egypt; MDPI MENA desalination review (EUR 0.50-2.00/m&sup3;)</div>
+    <h4>LCOW: Levelized Cost of Water ($0.46/m&sup3;)</h4>
+
+    <p>Water cost is the dominant variable cost for irrigated agriculture in eastern Sinai. Unlike the Nile Valley and Delta, where farmers pay nothing for raw irrigation water (bearing only on-farm pumping costs), eastern Sinai has no access to the Nile system. The Al-Salam Canal serves parts of northern Sinai west of El-Arish with mixed Nile/drainage water, but does not extend to eastern Sinai near the Gulf of Aqaba. Farmers must source water independently, and there is no published government tariff for agricultural desalinated water in Sinai.</p>
+
+    <p><strong>What farmers actually pay</strong> depends on the water source:</p>
+
+    <table>
+      <tr><th>Water Source</th><th>Cost ($/m&sup3;)</th><th>Notes</th></tr>
+      <tr><td>Brackish groundwater + own RO</td><td>0.60 - 1.20</td><td>Solar-powered OPEX $0.55-0.63 + amortized CAPEX; salinity 2,000-9,000 ppm</td></tr>
+      <tr><td>Seawater RO (diesel)</td><td>0.91 - 1.60</td><td>Sinai 9-site coastal study (2025); $1.60 single-stage, $0.91 four-stage</td></tr>
+      <tr><td>Seawater RO (solar/wind)</td><td>0.88 - 1.50</td><td>+ distribution infrastructure = $1.00-2.00/m&sup3; delivered</td></tr>
+      <tr><td>Gov. municipal desal (HCWW)</td><td>0.01 - 0.06</td><td>Heavily subsidized drinking water; not available for agriculture</td></tr>
+      <tr><td>Private tanker trucks</td><td>2.00 - 3.00+</td><td>Emergency/remote scenarios; EGP 100+/m&sup3; reported</td></tr>
+    </table>
+
+    <p>The default of $0.46/m&sup3; reflects a favorable brackish groundwater scenario with existing solar pumping infrastructure and short distribution distances. This sits at the optimistic end of the feasible range but is supported by literature showing $0.55-0.63/m&sup3; OPEX for solar-powered brackish RO in Egypt.</p>
+
+    <div class="note">
+      <strong>Desalination infrastructure in North Sinai:</strong> The El-Arish desalination plant (100,000 m&sup3;/day Phase 1, expanding to 300,000 m&sup3;/day, $97M capital cost) is under commissioning as of late 2025 for municipal drinking water supply to ~350,000 residents. Nine additional desalination plants serve Rafah, Sheikh Zuweid, El-Arish, and Bir El-Abd. There is currently no indication that municipal desalinated water will be allocated for agricultural use at subsidized rates.
+    </div>
+
+    <p><strong>International benchmarks for context:</strong></p>
+    <table>
+      <tr><th>Project</th><th>Year</th><th>LCOW ($/m&sup3;)</th></tr>
+      <tr><td>Sorek 2, Israel (global record)</td><td>2020</td><td>0.41</td></tr>
+      <tr><td>Dubai Hassyan RO (MENA record)</td><td>2023</td><td>0.31</td></tr>
+      <tr><td>Egypt small-scale RO plants</td><td>2022</td><td>0.33 - 1.00</td></tr>
+      <tr><td>MENA seawater average</td><td>2024</td><td>0.50 - 2.50</td></tr>
+      <tr><td>Global brackish (delivered)</td><td>2024</td><td>0.60 - 2.00</td></tr>
+    </table>
+
+    <p><strong>Exchange rate context:</strong> EGP-denominated water costs are a moving target. The Egyptian pound lost ~70% of its value against USD between early 2022 and late 2024 through three sequential devaluations. A cost that was $0.60/m&sup3; in 2021 (~EGP 9.4) could appear as $0.19/m&sup3; in 2025 at the same EGP price due to currency depreciation alone. The EU-Egypt agreement commits to annual water tariff increases for five years toward cost recovery.</p>
+
+    <div class="sources">Sources: ScienceDirect Sinai 9-site RO study (2025, LCOW $0.91-1.60/m&sup3;); MDPI Sustainability solar brackish RO Egypt (2024, OPEX $0.55-0.63/m&sup3;); ScienceDirect Egypt desalination review (2022, $0.33-1.00/m&sup3;); Egypt Independent (El-Arish plant, $97M); SIS Egypt (PM review of N. Sinai desal plants, Oct 2025); HCWW tariff schedule (2017-2018); FAO National Investment Profile Egypt; Daily News Egypt (desal expansion, Nov 2025); Smart Water Magazine (mega-project bidding, 2024); Zawia3 (water crisis reporting); Owl Research (Egypt water prices)</div>
 
     <h4>LCOE: Levelized Cost of Energy ($0.08/kWh)</h4>
     <p>Energy for agricultural pumping in eastern Sinai reflects three options: Egyptian grid electricity at subsidized agricultural rates (EGP 2.00/kWh, approximately $0.038/kWh, though a 15-25% hike is anticipated in 2026 and grid access may be limited in remote Sinai); solar PV direct-coupled pumping without battery storage ($0.05-0.10/kWh, benefiting from Egypt's excellent irradiation of 6+ kWh/m&sup2;/day); and diesel generators ($0.15-0.25/kWh at EGP 20.5/liter diesel). The default of $0.08/kWh assumes primarily solar PV pumping supplemented by limited grid or diesel backup, consistent with Egypt's agricultural energy transition trajectory.</p>
@@ -301,7 +332,7 @@
       <li>Kc stages: FAO Irrigation &amp; Drainage Paper 56, Table 12 (Tomato)</li>
       <li>Yields: Regional averages for open-field tomato, Eastern Sinai conditions</li>
       <li>Labor breakdown: FAO/IFAS extension guidelines for field tomato production</li>
-      <li>LCOW: ScienceDirect Sinai desalination studies; FAO National Investment Profile Egypt; NREL solar desalination review; MDPI MENA desalination for agriculture</li>
+      <li>LCOW: ScienceDirect Sinai 9-site RO study (2025); MDPI Sustainability solar brackish RO Egypt (2024); ScienceDirect Egypt desal review (2022); HCWW tariffs; FAO National Investment Profile Egypt; Egypt Independent, SIS Egypt, Daily News Egypt (infrastructure reporting)</li>
       <li>LCOE: EgyptERA official tariff (Sept 2024); IRENA Renewable Power Generation Costs 2024; Fraunhofer ISE Egypt study; IFC/World Bank solar pumping program</li>
       <li>LCOI: Ali (2020) "Investment profitability of drip irrigation," Irrigation and Drainage (Wiley); FAO irrigation economics; ICARDA drip irrigation program</li>
       <li>Labor: Egypt National Wages Council (EGP 28/hr min); ILO Informal Economy Diagnostic Study (2025); CEIC wage data; ERI SalaryExpert</li>

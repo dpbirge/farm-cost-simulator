@@ -229,12 +229,28 @@ function initSliders() {
   const container = document.getElementById("sliders-container");
   container.innerHTML = "";
 
+  // Create a single shared info popup element
+  const popup = document.createElement("div");
+  popup.className = "slider-info-popup";
+  popup.innerHTML = '<button class="slider-info-popup-close">&times;</button><div class="slider-info-popup-content"></div>';
+  document.body.appendChild(popup);
+
+  popup.querySelector(".slider-info-popup-close").addEventListener("click", () => {
+    popup.classList.remove("visible");
+  });
+  document.addEventListener("click", (e) => {
+    if (popup.classList.contains("visible") && !popup.contains(e.target) && !e.target.classList.contains("slider-info-btn")) {
+      popup.classList.remove("visible");
+    }
+  });
+
   for (const def of SLIDER_DEFS) {
     const decimals = def.step < 1 ? String(def.step).split(".")[1].length : 0;
+    const infoBtn = def.info ? `<button class="slider-info-btn" data-info-id="${def.id}">i</button>` : "";
     const div = document.createElement("div");
     div.className = "slider-group";
     div.innerHTML = `
-      <label for="slider-${def.id}">${def.label}
+      <label for="slider-${def.id}">${def.label}${infoBtn}
         <span class="slider-unit">(${def.unit})</span>
       </label>
       <div class="slider-row">
@@ -244,6 +260,25 @@ function initSliders() {
       </div>
     `;
     container.appendChild(div);
+
+    // Wire info button if present
+    if (def.info) {
+      div.querySelector(".slider-info-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        const content = popup.querySelector(".slider-info-popup-content");
+        content.innerHTML = def.info;
+        popup.classList.add("visible");
+        // Position near the button
+        const rect = e.target.getBoundingClientRect();
+        let top = rect.bottom + 8;
+        let left = rect.left;
+        // Clamp to viewport
+        if (left + 360 > window.innerWidth) left = window.innerWidth - 370;
+        if (top + 300 > window.innerHeight) top = rect.top - 310;
+        popup.style.top = Math.max(8, top) + "px";
+        popup.style.left = Math.max(8, left) + "px";
+      });
+    }
 
     const slider = div.querySelector("input[type=range]");
     const display = div.querySelector(".slider-value");
