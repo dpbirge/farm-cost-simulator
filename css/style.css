@@ -176,17 +176,6 @@ body {
   margin-bottom: 4px;
 }
 
-.planting-slider-row {
-  position: relative;
-}
-
-.planting-slider-row input[type="range"] {
-  width: 100%;
-  height: 6px;
-  accent-color: var(--primary-light);
-  cursor: pointer;
-}
-
 .planting-tick-labels {
   display: flex;
   margin-top: 2px;

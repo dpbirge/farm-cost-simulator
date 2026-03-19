@@ -240,7 +240,7 @@ function _buildPlantingSlider(season, containerId, defaultIdx) {
 
   container.innerHTML = `
     <label>${label} <span class="planting-current-label" id="${season}-planting-label">${currentLabel}</span></label>
-    <div class="planting-slider-row">
+    <div class="slider-row">
       <input type="range" id="${season}-planting-slider" min="0" max="${maxIdx}" step="1" value="${defaultIdx}">
     </div>
     <div class="planting-tick-labels">
